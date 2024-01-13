@@ -1,5 +1,5 @@
 interface CustomInputProps extends React.HTMLProps<HTMLInputElement> {
-    label: string;
+    label?: string;
     type?: "text" | "number" | "email";
     error?: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -14,7 +14,7 @@ export default function Input({
 }: CustomInputProps) {
     return (
         <div>
-            <label className="font-medium">{label}</label>
+            {label && <label className="font-medium">{label}</label>}
             <input
                 type={type}
                 onChange={onChange}

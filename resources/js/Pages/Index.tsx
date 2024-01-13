@@ -5,7 +5,7 @@ import { PageProps } from "@/types";
 import { useForm } from "@inertiajs/react";
 
 export default function (props: PageProps) {
-    const { post, data, setData, errors } = useForm<{
+    const { post, data, setData, errors, processing } = useForm<{
         equations: {
             value: string;
             initialCondition: number;
@@ -76,13 +76,13 @@ export default function (props: PageProps) {
                                 }}
                                 className="mt-[24px] h-[43px] px-4"
                             >
-                                Remove
+                                &times; Remove
                             </Button>
                         </div>
                     ))}
                 </div>
 
-                <div className="mt-4 flex gap-x-4">
+                <div className="mt-4 ml-4">
                     <Button
                         onClick={() => {
                             const equations = [...data.equations];
@@ -90,9 +90,27 @@ export default function (props: PageProps) {
                             setData("equations", equations);
                         }}
                     >
-                        + Add equation
+                        + Add equation ⤴
                     </Button>
+                </div>
 
+                <div className="mt-4 flex items-center gap-x-2 border-2 border-black p-4">
+                    <p className="font-medium">
+                        Graph from <em>t = 0</em> to <em>t = </em>
+                    </p>
+                    <div className="w-28">
+                        <Input
+                            type="number"
+                            value={data.timeMax}
+                            onChange={(e) => {
+                                setData("timeMax", Number(e.target.value));
+                            }}
+                            error={errors.timeMax}
+                        />
+                    </div>
+                </div>
+
+                <div className="mt-4">
                     <Button
                         onClick={() => {
                             post(route("graph.execute"), {
@@ -108,11 +126,15 @@ export default function (props: PageProps) {
             </div>
 
             <div className="min-w-0">
-                {props.flash.graph_id && (
+                {processing && (
+                    <div className="border-2 border-black bg-white/20 w-full aspect-[1.33/1] animate-pulse"></div>
+                )}
+
+                {props.flash.graph_id && !processing && (
                     <div>
                         <img
                             src={route("graph.image", props.flash.graph_id)}
-                            className="border-2 border-black"
+                            className="border-2 border-black aspect-[1.33/1] object-cover"
                         />
                         <div className="mt-4">
                             <Button
