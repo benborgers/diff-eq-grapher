@@ -17,32 +17,53 @@ class Graph extends Controller
             'timeMax' => 'required|numeric',
         ]);
 
-        $equationReplacements = [
-            'cos' => 'np.cos',
-            'sin' => 'np.sin',
-            'tan' => 'np.tan',
-            'log' => 'np.log',
+        // DO NOT USE: t, y, e
+        $humanToToken = [
+            'cos' => 'c',
+            'sin' => 's',
+            'tan' => 'a', // not t
+            'log' => 'l',
+            'pi' => 'p',
+            'π' => 'p',
+        ];
+
+        $tokenToComputer = [
+            'p' => 'np.pi',
+            's' => 'np.sin',
+            'c' => 'np.cos',
+            'a' => 'np.tan',
+            'l' => 'np.log',
             '^' => '**',
             'e' => 'np.e',
-            'pi' => 'np.pi',
         ];
+
+        $functions = ['np.sin', 'np.cos', 'np.tan', 'np.log'];
 
         $equations = collect($body['equations'])
             ->pluck('value')
-            ->map(function ($equation) use ($equationReplacements) {
-                foreach($equationReplacements as $before => $after) {
+            ->map(function ($equation) use ($humanToToken, $tokenToComputer, $functions) {
+                foreach($humanToToken as $before => $after) {
                     $equation = str_replace($before, $after, $equation);
                 }
 
                 // Make implicit multiplication explicit.
-                // Rule 1: digit followed by a letter (e.g., "4y" -> "4 * y")
-                $equation = preg_replace('/(\d)([a-zA-Z])/', '$1 * $2', $equation);
+                // Digit followed by a letter (e.g., "4y" -> "4 * y")
+                $equation = preg_replace('/(\d)\s*([a-z])/', '$1 * $2', $equation);
+                // Closing parenthesis followed by a letter or digit (e.g., ")(4" -> ") * (4")
+                $equation = preg_replace('/(\))\s*(?=[a-z0-9])/', '$1 * ', $equation);
+                // Letter or digit followed by an opening parenthesis (e.g., "y(" -> "y * (")
+                $equation = preg_replace('/([a-z0-9])\s*(\()/', '$1 * $2', $equation);
+                // Two variables (e.g., "yx" -> "y * x" or "y x" -> "y * x")
+                $equation = preg_replace('/([a-z])\s*([a-z])/', '$1 * $2', $equation);
 
-                // Rule 2: closing parenthesis followed by a letter or digit (e.g., ")(4" -> ") * (4")
-                $equation = preg_replace('/(\))(?=[a-zA-Z0-9])/', '$1 * ', $equation);
+                foreach($tokenToComputer as $before => $after) {
+                    $equation = str_replace($before, $after, $equation);
+                }
 
-                // Rule 3: letter or digit followed by an opening parenthesis (e.g., "y(" -> "y * (")
-                $equation = preg_replace('/([a-zA-Z0-9])(\()/', '$1 * $2', $equation);
+                // Remove * after functions (e.g. "np.sin * (x)" -> "np.sin(x)")
+                foreach($functions as $function) {
+                    $equation = preg_replace("/({$function})\s*\*/", '$1', $equation);
+                }
 
                 return $equation;
             });
