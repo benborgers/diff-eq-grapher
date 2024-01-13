@@ -11,41 +11,81 @@ class Graph extends Controller
     {
         $id = str()->random();
 
+        $body = $request->validate([
+            'equations.*.value' => 'string',
+            'equations.*.initialCondition' => 'numeric',
+            'timeMax' => 'numeric',
+        ]);
+
+        $equationReplacements = [
+            'cos' => 'np.cos',
+            'sin' => 'np.sin',
+            'tan' => 'np.tan',
+            'log' => 'np.log',
+            '^' => '**',
+            'e' => 'np.e',
+            'pi' => 'np.pi',
+        ];
+
+        $equations = collect($body['equations'])
+            ->pluck('value')
+            ->map(function ($equation) use ($equationReplacements) {
+                foreach($equationReplacements as $before => $after) {
+                    $equation = str_replace($before, $after, $equation);
+                }
+                return $equation;
+            });
+
+        $pythonFunctions = $equations->map(function ($equation, $i) {
+            return <<<PYTHON
+            def eq$i(y, t):
+                return $equation
+            PYTHON;
+        })->join("\n\n");
+
+        $pythonInitialConditions = collect($body['equations'])
+            ->pluck('initialCondition')
+            ->map(function ($initialCondition, $i) {
+                return "y0_$i = $initialCondition";
+            })->join("\n");
+
+        $pythonSolves = $equations->map(function ($equation, $i) {
+            return "y$i = odeint(eq$i, y0_$i, t)";
+        })->join("\n");
+
+        $pythonPlots = $equations->map(function ($equation, $i) use ($body) {
+            $originalEquation = $body['equations'][$i]['value'];
+            return "plt.plot(t, y$i, label='dy/dt = $originalEquation')";
+        })->join("\n");
+
         $python = <<<PYTHON
-import numpy as np
-from scipy.integrate import odeint
-import matplotlib.pyplot as plt
+        import numpy as np
+        from scipy.integrate import odeint
+        import matplotlib.pyplot as plt
 
-# Define multiple differential equations
-def dydt1(y, t):
-    return -2 * y + 2
+        # Define multiple differential equations
+        {$pythonFunctions}
 
-def dydt2(y, t):
-    return -y + 1
+        # Initial conditions
+        {$pythonInitialConditions}
 
-# Initial conditions
-y0_1 = 0.5
-y0_2 = 1.0
+        # Time vector from 0 to something
+        t = np.linspace(0, {$body['timeMax']}, 400)
 
-# Time vector from 0 to 5
-t = np.linspace(0, 10, 100)
+        # Solve the differential equations
+        {$pythonSolves}
 
-# Solve the differential equations
-y1 = odeint(dydt1, y0_1, t)
-y2 = odeint(dydt2, y0_2, t)
+        # Plot the solutions
+        {$pythonPlots}
 
-# Plot the solutions
-plt.plot(t, y1, label='dy/dt = -2y + 2, y(0) = 0.5')
-plt.plot(t, y2, label='dy/dt = -y + 1, y(0) = 1.0')
+        # Add legends and labels
+        plt.xlabel('Time')
+        plt.ylabel('y(t)')
+        plt.legend()
 
-# Add legends and labels
-plt.xlabel('Time')
-plt.ylabel('y(t)')
-plt.legend()
-
-# Save the plot to a file in the filesystem
-plt.savefig('{$id}.png')
-PYTHON;
+        # Save the plot to a file in the filesystem
+        plt.savefig('{$id}.png', dpi=300)
+        PYTHON;
 
         $WORKING_DIR = resource_path('python');
 
@@ -56,6 +96,12 @@ PYTHON;
 
         Process::path($WORKING_DIR)->run("rm {$id}.py");
 
+        if($result->failed()) {
+            return redirect()->back()->with('error', $result->errorOutput());
+        }
+
         // dd($result->output() . $result->errorOutput());
+
+        return redirect()->back()->with('graph_id', $id);
     }
 }

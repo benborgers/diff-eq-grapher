@@ -10,6 +10,7 @@ Route::get('/', function () {
 });
 
 Route::post('/graph', Controllers\Graph::class)->name('graph.execute');
+Route::get('/graph-image/{id}', Controllers\GraphImage::class)->name('graph.image');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
