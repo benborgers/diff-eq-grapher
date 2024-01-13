@@ -12,9 +12,9 @@ class Graph extends Controller
         $id = str()->random();
 
         $body = $request->validate([
-            'equations.*.value' => 'string',
-            'equations.*.initialCondition' => 'numeric',
-            'timeMax' => 'numeric',
+            'equations.*.value' => 'required|string',
+            'equations.*.initialCondition' => 'required|numeric',
+            'timeMax' => 'required|numeric',
         ]);
 
         $equationReplacements = [
@@ -33,6 +33,17 @@ class Graph extends Controller
                 foreach($equationReplacements as $before => $after) {
                     $equation = str_replace($before, $after, $equation);
                 }
+
+                // Make implicit multiplication explicit.
+                // Rule 1: digit followed by a letter (e.g., "4y" -> "4 * y")
+                $equation = preg_replace('/(\d)([a-zA-Z])/', '$1 * $2', $equation);
+
+                // Rule 2: closing parenthesis followed by a letter or digit (e.g., ")(4" -> ") * (4")
+                $equation = preg_replace('/(\))(?=[a-zA-Z0-9])/', '$1 * ', $equation);
+
+                // Rule 3: letter or digit followed by an opening parenthesis (e.g., "y(" -> "y * (")
+                $equation = preg_replace('/([a-zA-Z0-9])(\()/', '$1 * $2', $equation);
+
                 return $equation;
             });
 

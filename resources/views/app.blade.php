@@ -10,8 +10,10 @@
         @viteReactRefresh
         @vite(['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"])
         @inertiaHead
+
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased text-black bg-amber-100">
         @inertia
     </body>
 </html>

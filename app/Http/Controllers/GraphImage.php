@@ -8,6 +8,8 @@ class GraphImage extends Controller
 {
     public function __invoke($id)
     {
-        return file_get_contents(resource_path('python/'. $id .'.png'));
+        return response(
+            file_get_contents(resource_path('python/'. $id .'.png'))
+        )->header('Content-Type', 'image/png');
     }
 }
