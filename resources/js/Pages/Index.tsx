@@ -8,29 +8,28 @@ export default function (props: PageProps) {
     const { post, data, setData, errors, processing } = useForm<{
         equations: {
             value: string;
-            initialCondition: number;
+            initialCondition: string;
         }[];
-        timeMax: number;
+        timeMax: string;
     }>({
         equations: [
             {
-                // value: "cos(2 * pi * t) * y - sin(pi * t)^2",
-                value: "cos(2 pi t) y - sin(pi t)^2",
-                initialCondition: 1,
+                value: "y * (y-1)(1-y/10) - 0.1t",
+                initialCondition: "10",
             },
         ],
-        timeMax: 20,
+        timeMax: "150",
     });
 
     return (
-        <div className="p-4 sm:p-8 sm:pb-4 grid min-h-screen grid-rows-[max-content,1fr,max-content] grid-cols-[1.5fr,1fr]">
+        <div className="p-4 sm:p-8 sm:pb-4 grid min-h-screen grid-rows-[max-content,1fr,max-content] grid-cols-[1fr,1fr]">
             <div className="col-span-2">
                 <h1 className="text-2xl font-bold text-gray-900">
                     Differential Equation Grapher
                 </h1>
             </div>
 
-            <div className="border-r-2 border-black/10 border-dashed mr-8 pr-8">
+            <div className="border-r-2 border-black/10 border-dashed mr-10 pr-10">
                 <div className="mt-8 space-y-4">
                     {data.equations.map((equation, i) => (
                         <div
@@ -57,9 +56,8 @@ export default function (props: PageProps) {
                                 value={equation.initialCondition}
                                 onChange={(e) => {
                                     const equations = [...data.equations];
-                                    equations[i].initialCondition = Number(
-                                        e.target.value
-                                    );
+                                    equations[i].initialCondition =
+                                        e.target.value;
                                     setData("equations", equations);
                                 }}
                                 error={
@@ -86,7 +84,10 @@ export default function (props: PageProps) {
                     <Button
                         onClick={() => {
                             const equations = [...data.equations];
-                            equations.push({ value: "", initialCondition: 1 });
+                            equations.push({
+                                value: "",
+                                initialCondition: "1",
+                            });
                             setData("equations", equations);
                         }}
                     >
@@ -103,7 +104,7 @@ export default function (props: PageProps) {
                             type="number"
                             value={data.timeMax}
                             onChange={(e) => {
-                                setData("timeMax", Number(e.target.value));
+                                setData("timeMax", e.target.value);
                             }}
                             error={errors.timeMax}
                         />
@@ -138,6 +139,7 @@ export default function (props: PageProps) {
                         />
                         <div className="mt-4">
                             <Button
+                                as="a"
                                 href={route(
                                     "graph.image",
                                     props.flash.graph_id

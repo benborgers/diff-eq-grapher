@@ -55,6 +55,8 @@ class Graph extends Controller
                 $equation = preg_replace('/([a-z0-9])\s*(\()/', '$1 * $2', $equation);
                 // Two variables (e.g., "yx" -> "y * x" or "y x" -> "y * x")
                 $equation = preg_replace('/([a-z])\s*([a-z])/', '$1 * $2', $equation);
+                // Two parentheses (e.g., ")(" -> ") * (")
+                $equation = preg_replace('/(\))\s*(\()/', '$1 * $2', $equation);
 
                 foreach($tokenToComputer as $before => $after) {
                     $equation = str_replace($before, $after, $equation);
