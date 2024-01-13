@@ -35,7 +35,7 @@ export default function (props: PageProps) {
                     {data.equations.map((equation, i) => (
                         <div
                             key={i}
-                            className="grid grid-cols-[1fr,200px,max-content] gap-x-6 items-end"
+                            className="grid grid-cols-[1fr,150px,max-content] gap-x-6 items-start"
                         >
                             <Input
                                 label="Differential equation"
@@ -47,6 +47,8 @@ export default function (props: PageProps) {
                                         e.target.value.toLowerCase();
                                     setData("equations", equations);
                                 }}
+                                // @ts-expect-error
+                                error={errors[`equations.${i}.value`]}
                             />
 
                             <Input
@@ -60,6 +62,10 @@ export default function (props: PageProps) {
                                     );
                                     setData("equations", equations);
                                 }}
+                                error={
+                                    // @ts-expect-error
+                                    errors[`equations.${i}.initialCondition`]
+                                }
                             />
 
                             <Button
@@ -68,7 +74,7 @@ export default function (props: PageProps) {
                                     equations.splice(i, 1);
                                     setData("equations", equations);
                                 }}
-                                className="h-[43px] px-4"
+                                className="mt-[24px] h-[43px] px-4"
                             >
                                 Remove
                             </Button>
@@ -161,7 +167,6 @@ ${props.flash.error}`.trim()}
 
 const Help = ({ message }: { message: string }) => {
     const [askForEmail, setAskForEmail] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
     const { data, setData, post, errors } = useForm<{
         email: string;
         message: string;
@@ -178,44 +183,40 @@ const Help = ({ message }: { message: string }) => {
         );
     }
 
-    if (!submitted) {
-        return (
-            <div>
-                <div className="text-sm text-black space-y-0.5  bg-gray-100 p-3">
-                    <p>
-                        Leave your email and I’ll take a look! (Either it’s your
-                        fault and I’ll let you know how to fix it, or it’s my
-                        fault and I’ll fix it. Both are very helpful! I will be
-                        very grateful either way!)
-                    </p>
-                    <p className="italic">— Ben (Tufts ’25)</p>
-                </div>
-                <form
-                    className="mt-3"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        post(route("contact"), {
-                            onSuccess: () => setSubmitted(true),
-                        });
-                    }}
-                >
-                    <Input
-                        label="What’s your email?"
-                        type="email"
-                        required
-                        placeholder="you@tufts.edu"
-                        value={data.email}
-                        error={errors.email}
-                        onChange={(e) => setData("email", e.target.value)}
-                    />
-
-                    <div className="mt-3 flex justify-end">
-                        <Button type="submit">Send report</Button>
-                    </div>
-                </form>
+    return (
+        <div>
+            <div className="text-sm text-black space-y-0.5  bg-gray-100 p-3">
+                <p>
+                    Leave your email and I’ll take a look! (Either it’s your
+                    fault and I’ll let you know how to fix it, or it’s my fault
+                    and I’ll fix it. Both are very helpful! I will be very
+                    grateful either way!)
+                </p>
+                <p className="italic">— Ben (Tufts ’25)</p>
             </div>
-        );
-    }
+            <form
+                className="mt-3"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    post(route("contact"), {
+                        onSuccess: () => alert("I’ll get back to you asap!"),
+                    });
+                }}
+            >
+                <Input
+                    label="What’s your email?"
+                    type="email"
+                    required
+                    placeholder="you@tufts.edu"
+                    value={data.email}
+                    error={errors.email}
+                    onChange={(e) => setData("email", e.target.value)}
+                />
 
-    return <p>Sent! I’ll get back to you asap.</p>;
+                <div className="mt-3 flex justify-end">
+                    <Button type="submit">Send report</Button>
+                </div>
+            </form>
+        </div>
+    );
 };
