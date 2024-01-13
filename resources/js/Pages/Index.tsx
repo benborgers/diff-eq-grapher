@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Button from "@/Components/Button";
 import Input from "@/Components/Input";
 import { PageProps } from "@/types";
@@ -100,7 +101,7 @@ export default function (props: PageProps) {
                 </div>
             </div>
 
-            <div>
+            <div className="min-w-0">
                 {props.flash.graph_id && (
                     <div>
                         <img
@@ -123,9 +124,24 @@ export default function (props: PageProps) {
 
                 {props.flash.error && (
                     <div className="p-4 bg-white border-2 border-black">
-                        <p className="whitespace-pre-wrap">
-                            {props.flash.error}
-                        </p>
+                        <h2 className="text-xl font-semibold">
+                            Error in your equation(s):
+                        </h2>
+
+                        <pre className="mt-2 whitespace-pre-wrap overflow-x-scroll bg-gray-100 p-3">
+                            {props.flash.error?.split("return").reverse()[0]}
+                        </pre>
+
+                        <div className="mt-6">
+                            <Help
+                                message={`
+Data:
+${JSON.stringify(data, null, 2)}
+
+Error:
+${props.flash.error}`.trim()}
+                            />
+                        </div>
                     </div>
                 )}
             </div>
@@ -142,3 +158,64 @@ export default function (props: PageProps) {
         </div>
     );
 }
+
+const Help = ({ message }: { message: string }) => {
+    const [askForEmail, setAskForEmail] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
+    const { data, setData, post, errors } = useForm<{
+        email: string;
+        message: string;
+    }>({
+        email: "",
+        message,
+    });
+
+    if (!askForEmail) {
+        return (
+            <Button onClick={() => setAskForEmail(true)}>
+                No idea what’s wrong, ask for help &rarr;
+            </Button>
+        );
+    }
+
+    if (!submitted) {
+        return (
+            <div>
+                <div className="text-sm text-black space-y-0.5  bg-gray-100 p-3">
+                    <p>
+                        Leave your email and I’ll take a look! (Either it’s your
+                        fault and I’ll let you know how to fix it, or it’s my
+                        fault and I’ll fix it. Both are very helpful! I will be
+                        very grateful either way!)
+                    </p>
+                    <p className="italic">— Ben (Tufts ’25)</p>
+                </div>
+                <form
+                    className="mt-3"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        post(route("contact"), {
+                            onSuccess: () => setSubmitted(true),
+                        });
+                    }}
+                >
+                    <Input
+                        label="What’s your email?"
+                        type="email"
+                        required
+                        placeholder="you@tufts.edu"
+                        value={data.email}
+                        error={errors.email}
+                        onChange={(e) => setData("email", e.target.value)}
+                    />
+
+                    <div className="mt-3 flex justify-end">
+                        <Button type="submit">Send report</Button>
+                    </div>
+                </form>
+            </div>
+        );
+    }
+
+    return <p>Sent! I’ll get back to you asap.</p>;
+};
