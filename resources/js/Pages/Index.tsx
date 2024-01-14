@@ -88,9 +88,9 @@ export default function (props: PageProps) {
                                         equations.splice(i, 1);
                                         setData("equations", equations);
                                     }}
-                                    className="sm:mt-[24px] h-[43px] px-4"
+                                    className="sm:mt-[24px] h-[43px] px-1.5"
                                 >
-                                    &times; Remove
+                                    &times;
                                 </Button>
                             </div>
                         </div>
