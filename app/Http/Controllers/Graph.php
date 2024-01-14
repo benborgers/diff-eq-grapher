@@ -34,7 +34,10 @@ class Graph extends Controller
             }
         }
 
-        // DO NOT USE: t, y, e (already are variables)
+        // e.g. sin^2(x)
+        $canBeRaised = ['sin', 'cos', 'tan'];
+
+        // DO NOT USE t, y, e (already are variables)
         $humanToToken = [
             'cos' => 'c',
             'sin' => 's',
@@ -58,7 +61,12 @@ class Graph extends Controller
 
         $equations = collect($body['equations'])
             ->pluck('value')
-            ->map(function ($equation) use ($humanToToken, $tokenToComputer, $functions) {
+            ->map(function ($equation) use ($canBeRaised, $humanToToken, $tokenToComputer, $functions) {
+                // Replace sin^2(y) with sin(y)**2
+                foreach($canBeRaised as $function) {
+                    $equation = preg_replace("/({$function})\^(\d+)\((.+)\)/", '$1($3)**$2', $equation);
+                }
+
                 foreach ($humanToToken as $before => $after) {
                     $equation = str_replace($before, $after, $equation);
                 }
