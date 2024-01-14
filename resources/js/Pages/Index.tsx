@@ -158,7 +158,7 @@ export default function (props: PageProps) {
                 )}
             </div>
 
-            <footer className="col-span-2 border-t-2 border-black/10 border-dashed pt-3">
+            <footer className="mt-6 col-span-2 border-t-2 border-black/10 border-dashed pt-3">
                 <p className="text-sm text-black/40 font-medium">
                     Built by{" "}
                     <a href="https://ben.page" className="underline">
