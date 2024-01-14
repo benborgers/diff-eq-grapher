@@ -154,7 +154,7 @@ class Graph extends Controller
         $result = Process::path($WORKING_DIR)
             ->run("source venv/bin/activate && python3 {$id}.py");
 
-        Process::path($WORKING_DIR)->run("rm {$id}.py");
+        // Process::path($WORKING_DIR)->run("rm {$id}.py");
 
         if ($result->failed()) {
             posthog_event('graph_render_error', [
