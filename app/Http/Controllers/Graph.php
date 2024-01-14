@@ -15,6 +15,9 @@ class Graph extends Controller
             'equations.*.value' => 'required|string',
             'equations.*.initialCondition' => 'required|numeric',
             'timeMax' => 'required|numeric',
+        ], [], [
+            'equations.*.value' => 'equation',
+            'equations.*.initialCondition' => 'initial condition',
         ]);
 
         // DO NOT USE: t, y, e (already are variables)
