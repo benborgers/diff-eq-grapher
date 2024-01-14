@@ -1,1 +1,1 @@
-# Differential Equation Solver
+# Differential Equation Grapher
