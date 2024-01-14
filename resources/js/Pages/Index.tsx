@@ -95,7 +95,7 @@ export default function (props: PageProps) {
                             const equations = [...data.equations];
                             equations.push({
                                 value: "",
-                                initialCondition: "1",
+                                initialCondition: "",
                             });
                             setData("equations", equations);
                         }}
@@ -120,9 +120,22 @@ export default function (props: PageProps) {
                     </div>
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-4 flex justify-between">
                     <Button type="submit" color="emphasis">
                         GRAPH &rarr;
+                    </Button>
+
+                    <Button
+                        onClick={() => {
+                            setData({
+                                equations: [
+                                    { value: "", initialCondition: "" },
+                                ],
+                                timeMax: "",
+                            });
+                        }}
+                    >
+                        Reset
                     </Button>
                 </div>
             </form>

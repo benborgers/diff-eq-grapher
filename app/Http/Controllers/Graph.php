@@ -12,6 +12,7 @@ class Graph extends Controller
         $id = str()->random();
 
         $body = $request->validate([
+            'equations' => 'required|array',
             'equations.*.value' => 'required|string',
             'equations.*.initialCondition' => 'required|numeric',
             'timeMax' => 'required|numeric',
