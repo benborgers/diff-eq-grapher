@@ -14,11 +14,12 @@ class Contact extends Controller
             'message' => 'required|string',
         ]);
 
-        $body = "Message from {$body['email']}:\n\n{$body['message']}";
+        $emailBody = "Message from {$body['email']}:\n\n{$body['message']}";
 
-        Mail::raw($body, function ($message) {
+        Mail::raw($emailBody, function ($message) use ($body) {
             $message->to('benjamin.borgers@tufts.edu');
             $message->subject('Differential Equation Grapher');
+            $message->replyTo($body['email']);
         });
     }
 }

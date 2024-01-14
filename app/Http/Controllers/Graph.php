@@ -17,7 +17,7 @@ class Graph extends Controller
             'timeMax' => 'required|numeric',
         ]);
 
-        // DO NOT USE: t, y, e
+        // DO NOT USE: t, y, e (already are variables)
         $humanToToken = [
             'cos' => 'c',
             'sin' => 's',
