@@ -29,12 +29,21 @@ export default function (props: PageProps) {
                 </h1>
             </div>
 
-            <div className="border-r-2 border-black/10 border-dashed mr-10 pr-10">
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    post(route("graph.execute"), {
+                        preserveScroll: true,
+                        preserveState: true,
+                    });
+                }}
+                className="border-r-2 border-black/10 border-dashed mr-10 pr-10"
+            >
                 <div className="mt-8 space-y-4">
                     {data.equations.map((equation, i) => (
                         <div
                             key={i}
-                            className="grid grid-cols-[1fr,150px,max-content] gap-x-6 items-start"
+                            className="grid grid-cols-[1fr,135px,max-content] gap-x-2 items-start"
                         >
                             <Input
                                 label="Differential equation"
@@ -112,19 +121,11 @@ export default function (props: PageProps) {
                 </div>
 
                 <div className="mt-4">
-                    <Button
-                        onClick={() => {
-                            post(route("graph.execute"), {
-                                preserveScroll: true,
-                                preserveState: true,
-                            });
-                        }}
-                        color="emphasis"
-                    >
+                    <Button type="submit" color="emphasis">
                         GRAPH &rarr;
                     </Button>
                 </div>
-            </div>
+            </form>
 
             <div className="min-w-0">
                 {processing && (
@@ -153,26 +154,7 @@ export default function (props: PageProps) {
                 )}
 
                 {props.flash.error && !processing && (
-                    <div className="p-4 bg-white border-2 border-black">
-                        <h2 className="text-xl font-semibold">
-                            Error in your equation(s):
-                        </h2>
-
-                        <pre className="mt-2 whitespace-pre-wrap overflow-x-scroll bg-gray-100 p-3">
-                            {props.flash.error?.split("return").reverse()[0]}
-                        </pre>
-
-                        <div className="mt-6">
-                            <Help
-                                message={`
-Data:
-${JSON.stringify(data, null, 2)}
-
-Error:
-${props.flash.error}`.trim()}
-                            />
-                        </div>
-                    </div>
+                    <Error message={props.flash.error} data={data} />
                 )}
             </div>
 
@@ -188,6 +170,36 @@ ${props.flash.error}`.trim()}
         </div>
     );
 }
+
+const Error = ({ message, data }: { message: string; data: object }) => {
+    const lines = message.split("\n");
+    const relevantStart = lines.findLastIndex((line) =>
+        line.includes("return")
+    );
+
+    return (
+        <div className="p-4 bg-white border-2 border-black">
+            <h2 className="text-xl font-semibold">Error in your equation:</h2>
+
+            <pre className="mt-2 whitespace-pre-wrap overflow-x-scroll bg-gray-100 p-3">
+                {lines
+                    .slice(relevantStart === -1 ? 0 : relevantStart)
+                    .join("\n")}
+            </pre>
+
+            <div className="mt-6">
+                <Help
+                    message={`
+Data:
+${JSON.stringify(data, null, 2)}
+
+Error:
+${message}`.trim()}
+                />
+            </div>
+        </div>
+    );
+};
 
 const Help = ({ message }: { message: string }) => {
     const [askForEmail, setAskForEmail] = useState(false);
