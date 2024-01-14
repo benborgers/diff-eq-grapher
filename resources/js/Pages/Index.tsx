@@ -22,7 +22,7 @@ export default function (props: PageProps) {
     });
 
     return (
-        <div className="p-4 sm:p-8 sm:pb-4 grid min-h-screen grid-rows-[max-content,1fr,max-content] grid-cols-[1fr,1fr]">
+        <div className="p-4 sm:p-8 sm:pb-4 grid min-h-screen grid-rows-[max-content,1fr,max-content] grid-cols-[600px,1fr]">
             <div className="col-span-2">
                 <h1 className="text-2xl font-bold text-gray-900">
                     Differential Equation Grapher
@@ -37,7 +37,7 @@ export default function (props: PageProps) {
                         preserveState: true,
                     });
                 }}
-                className="border-r-2 border-black/10 border-dashed mr-10 pr-10"
+                className="min-w-0 border-r-2 border-black/10 border-dashed pr-10"
             >
                 <div className="mt-8 space-y-4">
                     {data.equations.map((equation, i) => (
@@ -144,7 +144,7 @@ export default function (props: PageProps) {
                 </div>
             </form>
 
-            <div className="min-w-0">
+            <div className="min-w-0 pl-10">
                 {processing && (
                     <div className="border-2 border-black bg-white/20 w-full aspect-[1.33/1] animate-pulse"></div>
                 )}
@@ -153,7 +153,7 @@ export default function (props: PageProps) {
                     <div>
                         <img
                             src={route("graph.image", props.flash.graph_id)}
-                            className="border-2 border-black aspect-[1.33/1] object-cover"
+                            className="border-2 border-black aspect-[1.33/1] object-cover w-full"
                         />
                         <div className="mt-4">
                             <Button
