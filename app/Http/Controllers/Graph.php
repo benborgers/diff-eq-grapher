@@ -149,6 +149,8 @@ class Graph extends Controller
 
         $WORKING_DIR = resource_path('python');
 
+        info("{$WORKING_DIR}/{$id}.py");
+
         file_put_contents("{$WORKING_DIR}/{$id}.py", $python);
 
         $result = Process::path($WORKING_DIR)
