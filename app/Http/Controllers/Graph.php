@@ -36,7 +36,7 @@ class Graph extends Controller
         }
 
         // e.g. sin^2(x)
-        $canBeRaised = ['sin', 'cos', 'tan'];
+        $canBeRaised = ['sin', 'cos', 'tan', 'log'];
 
         // DO NOT USE t, y, e (already are variables)
         $humanToToken = [
