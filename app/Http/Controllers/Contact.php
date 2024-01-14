@@ -17,7 +17,7 @@ class Contact extends Controller
         $emailBody = "Message from {$body['email']}:\n\n{$body['message']}";
 
         Mail::raw($emailBody, function ($message) use ($body) {
-            $message->to('benjamin.borgers@tufts.edu');
+            $message->to('benborgers@hey.com');
             $message->subject('Differential Equation Grapher');
             $message->replyTo($body['email']);
         });
