@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Jobs\CleanUpGraphs;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -12,7 +13,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Trying to pick a time when nobody is using the app.
+        $schedule->job(new CleanUpGraphs)
+            ->dailyAt('4:30')
+            ->timezone('America/New_York');
     }
 
     /**
