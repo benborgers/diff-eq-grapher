@@ -52,10 +52,7 @@ return [
 
         'postmark' => [
             'transport' => 'postmark',
-            // 'message_stream_id' => null,
-            // 'client' => [
-            //     'timeout' => 5,
-            // ],
+            'message_stream_id' => env('POSTMARK_MESSAGE_STREAM_ID'),
         ],
 
         'mailgun' => [
