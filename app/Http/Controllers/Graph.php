@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Process;
-use PostHog\PostHog;
 
 class Graph extends Controller
 {
@@ -158,12 +157,8 @@ class Graph extends Controller
         Process::path($WORKING_DIR)->run("rm {$id}.py");
 
         if ($result->failed()) {
-            PostHog::capture([
-                'distinctId' => session()->getId(),
-                'event' => 'graph_render_error',
-                'properties' => [
-                    'error' => $result->errorOutput(),
-                ],
+            posthog_event('graph_render_error', [
+                'error' => $result->errorOutput(),
             ]);
 
             return redirect()->back()->with('error', $result->errorOutput());
@@ -171,13 +166,7 @@ class Graph extends Controller
 
         // dd($result->output() . $result->errorOutput());
 
-        PostHog::capture([
-            'distinctId' => session()->getId(),
-            'event' => 'graph_rendered',
-            'properties' => [
-                ...$body
-            ]
-        ]);
+        posthog_event('graph_rendered', [...$body]);
 
         return redirect()->back()->with('graph_id', $id);
     }

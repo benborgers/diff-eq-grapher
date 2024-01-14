@@ -21,5 +21,9 @@ class Contact extends Controller
             $message->subject('Differential Equation Grapher');
             $message->replyTo($body['email']);
         });
+
+        posthog_event('contact', [
+            'email' => $body['email'],
+        ]);
     }
 }

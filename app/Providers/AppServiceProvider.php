@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         PostHog::init(config('services.posthog.key'), [
-            'host' => 'https://us.posthog.com'
+            'host' => 'https://us.posthog.com',
         ]);
     }
 }
