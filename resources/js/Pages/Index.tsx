@@ -152,7 +152,7 @@ export default function (props: PageProps) {
                     </div>
                 )}
 
-                {props.flash.error && (
+                {props.flash.error && !processing && (
                     <div className="p-4 bg-white border-2 border-black">
                         <h2 className="text-xl font-semibold">
                             Error in your equation(s):
