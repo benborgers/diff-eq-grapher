@@ -22,7 +22,7 @@ export default function (props: PageProps) {
     });
 
     return (
-        <div className="p-4 sm:p-8 sm:pb-4 sm:grid sm:min-h-screen sm:grid-rows-[max-content,1fr,max-content] sm:grid-cols-[600px,1fr]">
+        <div className="p-4 sm:p-8 sm:pb-4 sm:grid sm:min-h-screen sm:grid-rows-[max-content,1fr,max-content] sm:grid-cols-[625px,1fr]">
             <div className="col-span-2">
                 <h1 className="text-2xl font-bold text-gray-900">
                     Differential Equation Grapher
@@ -47,6 +47,16 @@ export default function (props: PageProps) {
                         >
                             <Input
                                 label="Equation"
+                                // prefix={
+                                //     <div className="flex items-center gap-x-1.5">
+                                //         <div className="text-xs text-center font-medium">
+                                //             <div>dy</div>
+                                //             <div>dt</div>
+                                //         </div>
+                                //         <div>=</div>
+                                //     </div>
+                                // }
+                                pre="dy/dt ="
                                 type="text"
                                 value={equation.value}
                                 onChange={(e) => {
@@ -65,6 +75,7 @@ export default function (props: PageProps) {
 
                             <Input
                                 label="Initial condition"
+                                pre="y(0) ="
                                 type="number"
                                 value={equation.initialCondition}
                                 onChange={(e) => {

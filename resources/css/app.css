@@ -5,3 +5,9 @@
 body {
     font-feature-settings: "cv10" 1;
 }
+
+/* Remove stepper on number input. */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
