@@ -15,7 +15,7 @@ class CleanUpGraphs implements ShouldQueue
 
     public function handle(): void
     {
-        $result = Process::path(resource_path('python'))->run('rm *.png');
+        $result = Process::path(resource_path('python'))->run('rm *.png *.py');
 
         if (! $result->successful()) {
             throw new \Exception('Failed to clean up graphs');
