@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Process;
+use PostHog\PostHog;
 
 class Graph extends Controller
 {
@@ -28,7 +29,7 @@ class Graph extends Controller
                 if (str_contains($equation['value'], $disallowedWord)) {
                     // Validation error
                     return redirect()->back()->withErrors([
-                        "equations.$i.value" => 'Invalid equation.'
+                        "equations.$i.value" => 'Invalid equation.',
                     ]);
                 }
             }
@@ -63,7 +64,7 @@ class Graph extends Controller
             ->pluck('value')
             ->map(function ($equation) use ($canBeRaised, $humanToToken, $tokenToComputer, $functions) {
                 // Replace sin^2(y) with sin(y)**2
-                foreach($canBeRaised as $function) {
+                foreach ($canBeRaised as $function) {
                     $equation = preg_replace("/({$function})\^(\d+)\((.+)\)/", '$1($3)**$2', $equation);
                 }
 
@@ -157,10 +158,26 @@ class Graph extends Controller
         Process::path($WORKING_DIR)->run("rm {$id}.py");
 
         if ($result->failed()) {
+            PostHog::capture([
+                'distinctId' => session()->getId(),
+                'event' => 'graph_render_error',
+                'properties' => [
+                    'error' => $result->errorOutput(),
+                ],
+            ]);
+
             return redirect()->back()->with('error', $result->errorOutput());
         }
 
         // dd($result->output() . $result->errorOutput());
+
+        PostHog::capture([
+            'distinctId' => session()->getId(),
+            'event' => 'graph_rendered',
+            'properties' => [
+                ...$body
+            ]
+        ]);
 
         return redirect()->back()->with('graph_id', $id);
     }
