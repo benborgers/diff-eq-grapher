@@ -151,7 +151,8 @@ class Graph extends Controller
 
         info("{$WORKING_DIR}/{$id}.py");
 
-        file_put_contents("{$WORKING_DIR}/{$id}.py", $python);
+        $output = file_put_contents("{$WORKING_DIR}/{$id}.py", $python);
+        info($output);
 
         $result = Process::path($WORKING_DIR)
             ->run("source venv/bin/activate && python3 {$id}.py");
