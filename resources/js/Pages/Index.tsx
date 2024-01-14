@@ -47,15 +47,6 @@ export default function (props: PageProps) {
                         >
                             <Input
                                 label="Equation"
-                                // prefix={
-                                //     <div className="flex items-center gap-x-1.5">
-                                //         <div className="text-xs text-center font-medium">
-                                //             <div>dy</div>
-                                //             <div>dt</div>
-                                //         </div>
-                                //         <div>=</div>
-                                //     </div>
-                                // }
                                 pre="dy/dt ="
                                 type="text"
                                 value={equation.value}
