@@ -46,7 +46,7 @@ class Graph extends Controller
         $equations = collect($body['equations'])
             ->pluck('value')
             ->map(function ($equation) use ($humanToToken, $tokenToComputer, $functions) {
-                foreach($humanToToken as $before => $after) {
+                foreach ($humanToToken as $before => $after) {
                     $equation = str_replace($before, $after, $equation);
                 }
 
@@ -62,12 +62,12 @@ class Graph extends Controller
                 // Two parentheses (e.g., ")(" -> ") * (")
                 $equation = preg_replace('/(\))\s*(\()/', '$1 * $2', $equation);
 
-                foreach($tokenToComputer as $before => $after) {
+                foreach ($tokenToComputer as $before => $after) {
                     $equation = str_replace($before, $after, $equation);
                 }
 
                 // Remove * after functions (e.g. "np.sin * (x)" -> "np.sin(x)")
-                foreach($functions as $function) {
+                foreach ($functions as $function) {
                     $equation = preg_replace("/({$function})\s*\*/", '$1', $equation);
                 }
 
@@ -93,6 +93,7 @@ class Graph extends Controller
 
         $pythonPlots = $equations->map(function ($equation, $i) use ($body) {
             $originalEquation = $body['equations'][$i]['value'];
+
             return "plt.plot(t, y$i, label='dy/dt = $originalEquation')";
         })->join("\n");
 
@@ -134,7 +135,7 @@ class Graph extends Controller
 
         Process::path($WORKING_DIR)->run("rm {$id}.py");
 
-        if($result->failed()) {
+        if ($result->failed()) {
             return redirect()->back()->with('error', $result->errorOutput());
         }
 
