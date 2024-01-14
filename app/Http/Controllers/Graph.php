@@ -21,6 +21,19 @@ class Graph extends Controller
             'equations.*.initialCondition' => 'initial condition',
         ]);
 
+        $disallowedWordsInEquations = ['print', 'while', 'for', 'open', 'import'];
+
+        foreach ($body['equations'] as $i => $equation) {
+            foreach ($disallowedWordsInEquations as $disallowedWord) {
+                if (str_contains($equation['value'], $disallowedWord)) {
+                    // Validation error
+                    return redirect()->back()->withErrors([
+                        "equations.$i.value" => 'Invalid equation.'
+                    ]);
+                }
+            }
+        }
+
         // DO NOT USE: t, y, e (already are variables)
         $humanToToken = [
             'cos' => 'c',
