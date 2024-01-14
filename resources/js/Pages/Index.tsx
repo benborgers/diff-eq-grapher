@@ -22,7 +22,7 @@ export default function (props: PageProps) {
     });
 
     return (
-        <div className="p-4 sm:p-8 sm:pb-4 grid min-h-screen grid-rows-[max-content,1fr,max-content] grid-cols-[600px,1fr]">
+        <div className="p-4 sm:p-8 sm:pb-4 sm:grid sm:min-h-screen sm:grid-rows-[max-content,1fr,max-content] sm:grid-cols-[600px,1fr]">
             <div className="col-span-2">
                 <h1 className="text-2xl font-bold text-gray-900">
                     Differential Equation Grapher
@@ -37,16 +37,16 @@ export default function (props: PageProps) {
                         preserveState: true,
                     });
                 }}
-                className="min-w-0 border-r-2 border-black/10 border-dashed pr-10"
+                className="min-w-0 sm:border-r-2 sm:border-black/10 sm:border-dashed sm:pr-10"
             >
                 <div className="mt-8 space-y-4">
                     {data.equations.map((equation, i) => (
                         <div
                             key={i}
-                            className="grid grid-cols-[1fr,135px,max-content] gap-x-2 items-start"
+                            className="grid sm:grid-cols-[1fr,135px,max-content] gap-x-2 gap-y-2"
                         >
                             <Input
-                                label="Differential equation"
+                                label="Equation"
                                 type="text"
                                 value={equation.value}
                                 onChange={(e) => {
@@ -79,21 +79,23 @@ export default function (props: PageProps) {
                                 }
                             />
 
-                            <Button
-                                onClick={() => {
-                                    const equations = [...data.equations];
-                                    equations.splice(i, 1);
-                                    setData("equations", equations);
-                                }}
-                                className="mt-[24px] h-[43px] px-4"
-                            >
-                                &times; Remove
-                            </Button>
+                            <div className="flex justify-end">
+                                <Button
+                                    onClick={() => {
+                                        const equations = [...data.equations];
+                                        equations.splice(i, 1);
+                                        setData("equations", equations);
+                                    }}
+                                    className="sm:mt-[24px] h-[43px] px-4"
+                                >
+                                    &times; Remove
+                                </Button>
+                            </div>
                         </div>
                     ))}
                 </div>
 
-                <div className="mt-4 ml-4">
+                <div className="mt-4 sm:ml-4">
                     <Button
                         onClick={() => {
                             const equations = [...data.equations];
@@ -144,7 +146,7 @@ export default function (props: PageProps) {
                 </div>
             </form>
 
-            <div className="min-w-0 pl-10">
+            <div className="min-w-0 pt-16 sm:pt-0 sm:pl-10">
                 {processing && (
                     <div className="border-2 border-black bg-white/20 w-full aspect-[1.33/1] animate-pulse"></div>
                 )}
@@ -175,7 +177,7 @@ export default function (props: PageProps) {
                 )}
             </div>
 
-            <footer className="mt-6 col-span-2 border-t-2 border-black/10 border-dashed pt-3">
+            <footer className="mt-20 sm:mt-6 col-span-2 border-t-2 border-black/10 border-dashed pt-3">
                 <p className="text-sm text-black/40 font-medium">
                     Built by{" "}
                     <a href="https://ben.page" className="underline">
