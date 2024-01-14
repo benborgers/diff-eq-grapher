@@ -57,6 +57,10 @@ export default function (props: PageProps) {
                                 }}
                                 // @ts-expect-error
                                 error={errors[`equations.${i}.value`]}
+                                // Focus newly added equations.
+                                autoFocus={
+                                    i === data.equations.length - 1 && i !== 0
+                                }
                             />
 
                             <Input
