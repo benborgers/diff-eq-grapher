@@ -1,5 +1,4 @@
-resources/python/*.png
-resources/python/*.py
+resources/python
 
 /.phpunit.cache
 /node_modules

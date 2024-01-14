@@ -43,6 +43,7 @@ class Graph extends Controller
             'sin' => 's',
             'tan' => 'a', // not t
             'log' => 'l',
+            'sqrt' => 'q',
             'pi' => 'p',
             'π' => 'p',
         ];
@@ -53,11 +54,12 @@ class Graph extends Controller
             'c' => 'np.cos',
             'a' => 'np.tan',
             'l' => 'np.log',
+            'q' => 'np.sqrt',
             '^' => '**',
             'e' => 'np.e',
         ];
 
-        $functions = ['np.sin', 'np.cos', 'np.tan', 'np.log'];
+        $functions = ['np.sin', 'np.cos', 'np.tan', 'np.log', 'np.sqrt'];
 
         $equations = collect($body['equations'])
             ->pluck('value')
