@@ -6,8 +6,6 @@
         "build": "tsc && vite build"
     },
     "devDependencies": {
-        "@flareapp/flare-client": "^3.0.5",
-        "@flareapp/flare-react": "^3.0.5",
         "@headlessui/react": "^1.4.2",
         "@inertiajs/react": "^1.0.0",
         "@tailwindcss/forms": "^0.5.3",
