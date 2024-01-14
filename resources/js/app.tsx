@@ -9,6 +9,7 @@ if (import.meta.env.PROD) {
     posthog.init(import.meta.env.VITE_POSTHOG_KEY, {
         api_host: "https://app.posthog.com",
     });
+    posthog.identify(window.SESSION_ID);
 }
 
 const appName = import.meta.env.VITE_APP_NAME;

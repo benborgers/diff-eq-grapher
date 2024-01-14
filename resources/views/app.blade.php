@@ -7,6 +7,10 @@
         <title inertia>Differential Equation Grapher</title>
         <link rel="icon" href="/favicon.png" />
 
+        <script>
+            window.SESSION_ID = `{{ session()->getId() }}`;
+        </script>
+
         @routes
         @viteReactRefresh
         @vite(['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"])
