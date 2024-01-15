@@ -88,9 +88,10 @@ export default function (props: PageProps) {
                                         equations.splice(i, 1);
                                         setData("equations", equations);
                                     }}
-                                    className="sm:mt-[24px] h-[43px] px-1.5"
+                                    className="sm:mt-[24px] h-[43px] sm:px-1.5"
                                 >
-                                    &times;
+                                    &times;{" "}
+                                    <span className="sm:hidden">Remove</span>
                                 </Button>
                             </div>
                         </div>
