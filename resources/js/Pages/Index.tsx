@@ -68,6 +68,7 @@ export default function (props: PageProps) {
                                 label="Initial condition"
                                 pre="y(0) ="
                                 type="number"
+                                step="any"
                                 value={equation.initialCondition}
                                 onChange={(e) => {
                                     const equations = [...data.equations];
@@ -120,6 +121,7 @@ export default function (props: PageProps) {
                     <div className="w-28">
                         <Input
                             type="number"
+                            step="any"
                             value={data.timeMax}
                             onChange={(e) => {
                                 setData("timeMax", e.target.value);
