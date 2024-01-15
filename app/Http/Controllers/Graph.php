@@ -160,6 +160,7 @@ class Graph extends Controller
 
         if ($result->failed()) {
             posthog_event('graph_render_error', [
+                ...$body,
                 'error' => $result->errorOutput(),
             ]);
 
