@@ -66,7 +66,7 @@ class Graph extends Controller
             ->map(function ($equation) use ($canBeRaised, $humanToToken, $tokenToComputer, $functions) {
                 // Replace sin^2(y) with sin(y)**2
                 foreach ($canBeRaised as $function) {
-                    $equation = preg_replace("/({$function})\^(\d+)\((.+)\)/", '$1($3)**$2', $equation);
+                    $equation = preg_replace("/({$function})\^(\d+)\((.+?)\)/", '$1($3)**$2', $equation);
                 }
 
                 foreach ($humanToToken as $before => $after) {
