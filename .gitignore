@@ -1,4 +1,5 @@
-resources/python
+/resources/python/venv
+/resources/python/public
 
 /.phpunit.cache
 /node_modules

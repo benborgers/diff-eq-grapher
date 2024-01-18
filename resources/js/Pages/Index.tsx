@@ -196,19 +196,14 @@ export default function (props: PageProps) {
 }
 
 const Error = ({ message, data }: { message: string; data: object }) => {
-    const lines = message.split("\n");
-    const relevantStart = lines.findLastIndex((line) =>
-        line.includes("return")
-    );
-
     return (
         <div className="p-4 bg-white border-2 border-black">
-            <h2 className="text-xl font-semibold">Error in your equation:</h2>
+            <h2 className="text-xl font-semibold">
+                Error in your equation(s).
+            </h2>
 
             <pre className="mt-4 whitespace-pre-wrap overflow-x-scroll bg-gray-100 p-3">
-                {lines
-                    .slice(relevantStart === -1 ? 0 : relevantStart)
-                    .join("\n")}
+                {message}
             </pre>
 
             <div className="mt-6">
