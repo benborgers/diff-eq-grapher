@@ -18,7 +18,7 @@ for equation in payload['equations']:
   func = lambdify((y_symbol, t_symbol), clean_expr, 'numpy')
   initial_condition = float(equation['initialCondition'])
   solution = odeint(func, initial_condition, t)
-  plt.plot(t, solution, label=equation['value'])
+  plt.plot(t, solution, label='dy/dt = ' + equation['value'])
 
 plt.xlabel('Time')
 plt.ylabel('y(t)')
