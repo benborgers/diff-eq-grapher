@@ -23,13 +23,20 @@ class Graph extends Controller
 
         $WORKING_DIR = resource_path('python');
 
-        $payload = json_encode([
+        $payload = [
             ...$body,
             'destination' => "public/{$id}.png",
-        ]);
+        ];
 
+        foreach($payload['equations'] as &$equation) {
+            // Replacements for common inputs that sympy can't handle.
+            $equation['value'] = str_replace('pit', 'pi t', $equation['value']);
+            $equation['value'] = str_replace('piy', 'pi y', $equation['value']);
+        }
+
+        $encodedPayload = json_encode($payload);
         $result = Process::path($WORKING_DIR)
-            ->run("mkdir -p public && ./venv/bin/python3 graph.py '{$payload}'");
+            ->run("mkdir -p public && ./venv/bin/python3 graph.py '{$encodedPayload}'");
 
         // dd($result->output() . $result->errorOutput());
 
@@ -39,34 +46,11 @@ class Graph extends Controller
                 'error' => $result->errorOutput(),
             ]);
 
-            $errorOutput = $this->helpfulError($body).$result->errorOutput();
-
-            return redirect()->back()->with('error', $errorOutput);
+            return redirect()->back()->with('error', $result->errorOutput());
         }
 
         posthog_event('graph_rendered', [...$body]);
 
         return redirect()->back()->with('graph_id', $id);
-    }
-
-    private function helpfulError($body)
-    {
-        $message = $this->helpfulErrorMessage($body);
-
-        if ($message) {
-            return "===\n" .$message . "\n===\n\n";
-        }
-    }
-
-    private function helpfulErrorMessage($body)
-    {
-        foreach($body['equations'] as $equation) {
-            $value = $equation['value'];
-            if (str_contains($value, 'pit') || str_contains($value, 'piy')) {
-                return "A space is required after “pi”.";
-            }
-        }
-
-        return null;
     }
 }
