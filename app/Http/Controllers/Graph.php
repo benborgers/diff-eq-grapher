@@ -9,6 +9,7 @@ class Graph extends Controller
 {
     public function __invoke(Request $request)
     {
+        $START = hrtime(as_number: true);
         $id = str()->random();
 
         $body = $request->validate([
@@ -44,12 +45,16 @@ class Graph extends Controller
             posthog_event('graph_render_error', [
                 ...$body,
                 'error' => $result->errorOutput(),
+                'time_elapsed' => round((hrtime(as_number: true) - $START) / 1e6)
             ]);
 
             return redirect()->back()->with('error', $result->errorOutput());
         }
 
-        posthog_event('graph_rendered', [...$body]);
+        posthog_event('graph_rendered', [
+            ...$body,
+            'time_elapsed' => round((hrtime(as_number: true) - $START) / 1e6)
+        ]);
 
         return redirect()->back()->with('graph_id', $id);
     }
