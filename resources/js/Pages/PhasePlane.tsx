@@ -37,7 +37,7 @@ export default function (props: PageProps) {
         >
           <Input
             label="Equation 1"
-            pre="dy/dt ="
+            pre="dx/dt ="
             value={data.equation1}
             onChange={(e) => setData("equation1", e.target.value.toLowerCase())}
             error={errors.equation1}
