@@ -19,6 +19,7 @@ class GraphPhasePlane extends Controller
             'xMax' => 'required|numeric',
             'yMin' => 'required|numeric',
             'yMax' => 'required|numeric',
+            'points' => 'present|array',
         ]);
 
         $WORKING_DIR = resource_path('python');

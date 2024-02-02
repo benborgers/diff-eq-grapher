@@ -5,22 +5,35 @@ import Layout from "@/Components/Layout";
 import { PageProps } from "@/types";
 import { useForm } from "@inertiajs/react";
 
+type Point = [number, number];
+
+type FormData = {
+  equation1: string;
+  equation2: string;
+  xMin: string;
+  xMax: string;
+  yMin: string;
+  yMax: string;
+  points: Point[];
+};
+
 export default function (props: PageProps) {
-  const { data, setData, post, errors, processing } = useForm<{
-    equation1: string;
-    equation2: string;
-    xMin: string;
-    xMax: string;
-    yMin: string;
-    yMax: string;
-  }>({
+  const { data, setData, post, errors, processing } = useForm<FormData>({
     equation1: "sin(t) - xy",
     equation2: "cos(t) - xy",
     xMin: "-3",
     xMax: "3",
     yMin: "-3",
     yMax: "3",
+    points: [],
   });
+
+  const generateGraph = () => {
+    post(route("phase-plane.execute"), {
+      preserveScroll: true,
+      preserveState: true,
+    });
+  };
 
   return (
     <Layout
@@ -28,10 +41,7 @@ export default function (props: PageProps) {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            post(route("phase-plane.execute"), {
-              preserveScroll: true,
-              preserveState: true,
-            });
+            generateGraph();
           }}
           className="space-y-4"
         >
@@ -108,6 +118,7 @@ export default function (props: PageProps) {
                   xMax: "",
                   yMin: "",
                   yMax: "",
+                  points: [],
                 });
               }}
             >
@@ -124,9 +135,15 @@ export default function (props: PageProps) {
 
           {props.flash.graph_id && !processing && (
             <div>
-              <img
-                src={route("graph.image", props.flash.graph_id)}
-                className="border-2 border-black aspect-[1.33/1] object-cover w-full"
+              <Image
+                graphId={props.flash.graph_id}
+                data={data}
+                onAddPoint={(point: Point) => {
+                  const _data = { ...data };
+                  _data.points.push(point);
+                  setData(_data);
+                  generateGraph();
+                }}
               />
               <div className="mt-4">
                 <Button
@@ -148,3 +165,61 @@ export default function (props: PageProps) {
     />
   );
 }
+
+const Image = ({
+  graphId,
+  data,
+  onAddPoint,
+}: {
+  graphId: string;
+  data: FormData;
+  onAddPoint: (point: Point) => void;
+}) => {
+  return (
+    <div
+      onPointerDown={(e) => {
+        const target = e.target as HTMLDivElement;
+
+        const rect = target.getBoundingClientRect();
+
+        const clickX = e.clientX - rect.left;
+        const clickY = e.clientY - rect.top;
+
+        const LEFT_EMPTY = 0.126;
+        const RIGHT_EMPTY = 0.1;
+        const leftEmptyPx = rect.width * LEFT_EMPTY;
+        const rightEmptyPx = rect.width * RIGHT_EMPTY;
+        const graphWidth = rect.width - leftEmptyPx - rightEmptyPx;
+        const graphClickX = clickX - leftEmptyPx;
+        const graphClickXProportion = graphClickX / graphWidth;
+
+        const TOP_EMPTY = 0.12;
+        const BOTTOM_EMPTY = 0.11;
+        const topEmptyPx = rect.height * TOP_EMPTY;
+        const bottomEmptyPx = rect.height * BOTTOM_EMPTY;
+        const graphHeight = rect.height - topEmptyPx - bottomEmptyPx;
+        const graphClickY = clickY - topEmptyPx;
+        const graphClickYProportion = graphClickY / graphHeight;
+
+        if (graphClickXProportion < 0 || graphClickXProportion > 1) return;
+        if (graphClickYProportion < 0 || graphClickYProportion > 1) return;
+
+        const coordinateX =
+          (parseFloat(data.xMax) - parseFloat(data.xMin)) *
+            graphClickXProportion +
+          parseFloat(data.xMin);
+        const coordinateY =
+          (parseFloat(data.yMax) - parseFloat(data.yMin)) *
+            (1 - graphClickYProportion) +
+          parseFloat(data.yMin);
+
+        onAddPoint([coordinateX, coordinateY]);
+      }}
+    >
+      <img
+        src={route("graph.image", graphId)}
+        className="border-2 border-black aspect-[1.33/1] object-cover w-full"
+      />
+    </div>
+  );
+};

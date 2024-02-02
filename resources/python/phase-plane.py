@@ -62,10 +62,9 @@ plt.ylim([yMin, yMax])
 plt.grid()
 
 # Plot trajectories for different starting points and times
-for y0 in [0.5, 1.0, 1.5, 2.0]:
+for point in payload['points']:
     tspan = np.linspace(0, 50, 5000)  # time span for the ODE solver
-    y_initial = [y0, y0]
-    ys = odeint(system, y_initial, tspan)
+    ys = odeint(system, point, tspan)
 
     plt.plot(ys[:,0], ys[:,1], 'k')  # path line
     plt.plot([ys[0,0]], [ys[0,1]], 'o') # start point
