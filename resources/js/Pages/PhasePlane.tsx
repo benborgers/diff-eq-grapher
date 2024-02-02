@@ -4,6 +4,7 @@ import Input from "@/Components/Input";
 import Layout from "@/Components/Layout";
 import { PageProps } from "@/types";
 import { useForm } from "@inertiajs/react";
+import { twMerge } from "tailwind-merge";
 
 type Point = [number, number];
 
@@ -129,15 +130,18 @@ export default function (props: PageProps) {
       }
       right={
         <div>
-          {processing && (
+          {processing && !props.flash.graph_id && (
             <div className="border-2 border-black bg-white/20 w-full aspect-[1.33/1] animate-pulse"></div>
           )}
 
-          {props.flash.graph_id && !processing && (
-            <div>
+          {props.flash.graph_id && (
+            <div
+              className={twMerge(processing && "opacity-50 transition-opacity")}
+            >
               <Image
                 graphId={props.flash.graph_id}
                 data={data}
+                processing={processing}
                 onAddPoint={(point: Point) => {
                   const _data = { ...data };
                   _data.points.push(point);
@@ -145,7 +149,11 @@ export default function (props: PageProps) {
                   generateGraph();
                 }}
               />
-              <div className="mt-4">
+              <p className="mt-2 italic text-sm">
+                Click anywhere to draw the line through that point. Click again
+                to remove a point.
+              </p>
+              <div className="mt-3">
                 <Button
                   as="a"
                   href={route("graph.image", props.flash.graph_id)}
@@ -170,14 +178,18 @@ const Image = ({
   graphId,
   data,
   onAddPoint,
+  processing,
 }: {
   graphId: string;
   data: FormData;
   onAddPoint: (point: Point) => void;
+  processing: boolean;
 }) => {
   return (
     <div
       onPointerDown={(e) => {
+        if (processing) return;
+
         const target = e.target as HTMLDivElement;
 
         const rect = target.getBoundingClientRect();
@@ -215,6 +227,7 @@ const Image = ({
 
         onAddPoint([coordinateX, coordinateY]);
       }}
+      className={twMerge(processing ? "cursor-wait" : "cursor-crosshair")}
     >
       <img
         src={route("graph.image", graphId)}
