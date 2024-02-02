@@ -10,6 +10,7 @@ Make a folder `resources/python` and `cd` into it.
 
 ```bash
 cd resources/python
+mkdir -p public
 python3 -m venv venv
 source venv/bin/activate
 pip install numpy scipy matplotlib sympy

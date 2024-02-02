@@ -43,7 +43,6 @@ export default function (props: PageProps) {
                 <Input
                   label="Equation"
                   pre="dy/dt ="
-                  type="text"
                   value={equation.value}
                   onChange={(e) => {
                     const equations = [...data.equations];

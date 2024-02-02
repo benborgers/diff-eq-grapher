@@ -14,6 +14,7 @@ Route::get('/phase-plane', function () {
 })->name('phase-plane');
 
 Route::post('/graph', Controllers\Graph::class)->name('graph.execute');
+Route::post('/phase-plane/graph', Controllers\GraphPhasePlane::class)->name('phase-plane.execute');
 Route::get('/graph-image/{id}', Controllers\GraphImage::class)->name('graph.image');
 Route::post('/contact', Controllers\Contact::class)->name('contact');
 
