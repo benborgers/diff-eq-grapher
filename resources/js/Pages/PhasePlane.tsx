@@ -150,8 +150,8 @@ export default function (props: PageProps) {
                 }}
               />
               <p className="mt-2 italic text-sm">
-                Click anywhere to draw the line through that point. Click again
-                to remove a point.
+                Click anywhere to draw the solution starting at that point.
+                Click the point again to remove it.
               </p>
               <div className="mt-3">
                 <Button
