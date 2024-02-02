@@ -1,3 +1,6 @@
+import Layout from "@/Components/Layout";
+import { useForm } from "@inertiajs/react";
+
 export default function () {
   const { data, setData, post, errors, processing } = useForm<{
     equation1: string;
@@ -15,5 +18,5 @@ export default function () {
     yMax: "3",
   });
 
-  return <div></div>;
+  return <Layout left={<div>left</div>} right={<div>right</div>} />;
 }

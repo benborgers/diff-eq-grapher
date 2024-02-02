@@ -34,7 +34,7 @@ export default function (props: PageProps) {
             });
           }}
         >
-          <div className="mt-8 space-y-4">
+          <div className="space-y-4">
             {data.equations.map((equation, i) => (
               <div
                 key={i}

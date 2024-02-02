@@ -7,7 +7,11 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Index');
-});
+})->name('index');
+
+Route::get('/phase-plane', function () {
+    return Inertia::render('PhasePlane');
+})->name('phase-plane');
 
 Route::post('/graph', Controllers\Graph::class)->name('graph.execute');
 Route::get('/graph-image/{id}', Controllers\GraphImage::class)->name('graph.image');

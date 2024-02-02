@@ -13,7 +13,7 @@ const Layout = ({
         </h1>
       </div>
 
-      <div className="min-w-0 sm:border-r-2 sm:border-black/10 sm:border-dashed sm:pr-10">
+      <div className="min-w-0 pt-8 sm:border-r-2 sm:border-black/10 sm:border-dashed sm:pr-10">
         {left}
       </div>
 
