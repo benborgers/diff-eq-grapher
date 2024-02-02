@@ -34,7 +34,7 @@ def system(y, t):
     return [func_1(x, y, t), func_2(x, y, t)]
 
 # Create a grid and compute direction at each point
-Y, X = np.mgrid[yMin:yMax:100j, xMin:xMax:100j]
+Y, X = np.mgrid[yMin:yMax:20j, xMin:xMax:20j]
 U, V = np.zeros(Y.shape), np.zeros(X.shape)
 T = 0  # The time 'T' at which to evaluate the direction fields
 
@@ -53,7 +53,7 @@ V = V/N
 
 # Create the figure and plot the phase plane
 plt.figure(figsize=(8, 6))
-plt.quiver(X, Y, U, V, color='r')
+plt.quiver(X, Y, U, V, color='#ccc')
 plt.xlabel('x')
 plt.ylabel('y')
 # plt.title(f'Phase Plane Plot at t={T}')
@@ -67,7 +67,7 @@ for y0 in [0.5, 1.0, 1.5, 2.0]:
     y_initial = [y0, y0]
     ys = odeint(system, y_initial, tspan)
 
-    plt.plot(ys[:,0], ys[:,1], 'b')  # path line
+    plt.plot(ys[:,0], ys[:,1], 'k')  # path line
     plt.plot([ys[0,0]], [ys[0,1]], 'o') # start point
     # plt.plot([ys[-1,0]], [ys[-1,1]], 's') # end point
 
