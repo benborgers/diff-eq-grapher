@@ -89,7 +89,7 @@ export default function (props: PageProps) {
                 type="number"
                 value={data.yMin}
                 onChange={(e) => setData("yMin", e.target.value)}
-                error={errors.equation2}
+                error={errors.yMin}
               />
             </div>
           </div>
