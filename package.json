@@ -17,6 +17,7 @@
         "laravel-vite-plugin": "^1.0.0",
         "postcss": "^8.4.31",
         "posthog-js": "^1.98.2",
+        "prettier-plugin-organize-imports": "^3.2.4",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "tailwind-merge": "^2.2.0",
