@@ -20,12 +20,12 @@ type FormData = {
 
 export default function (props: PageProps) {
   const { data, setData, post, errors, processing } = useForm<FormData>({
-    equation1: "sin(t) - xy",
-    equation2: "cos(t) - xy",
-    xMin: "-3",
-    xMax: "3",
-    yMin: "-3",
-    yMax: "3",
+    equation1: "(1-y) * x",
+    equation2: "(1-x) * y",
+    xMin: "0",
+    xMax: "2",
+    yMin: "0",
+    yMax: "2",
     points: [],
   });
 
