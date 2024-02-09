@@ -33,6 +33,10 @@ def system(y, t):
 
     return [func_1(x, y, t), func_2(x, y, t)]
 
+def inverted_system(y, t):
+    x, y = system(y, t)
+    return [-x, -y]
+
 # Create a grid and compute direction at each point
 Y, X = np.mgrid[yMin:yMax:20j, xMin:xMax:20j]
 U, V = np.zeros(Y.shape), np.zeros(X.shape)
@@ -65,10 +69,28 @@ plt.grid()
 for point in payload['points']:
     tspan = np.linspace(0, 50, 5000)  # time span for the ODE solver
     ys = odeint(system, point, tspan)
+    ys_inverted = odeint(inverted_system, point, tspan)
 
-    plt.plot(ys[:,0], ys[:,1], 'k')  # path line
-    plt.plot([ys[0,0]], [ys[0,1]], 'o') # start point
-    # plt.plot([ys[-1,0]], [ys[-1,1]], 's') # end point
+    plt.plot([ys[0,0]], [ys[0,1]], 'o') # start
 
-# plt.show()
+    valid_points = []
+    for y in ys:
+        if xMin <= y[0] <= xMax and yMin <= y[1] <= yMax:
+            valid_points.append(y)
+        else:
+            break # stop as soon as we go out of bounds
+    valid_points = np.array(valid_points)
+    if len(valid_points) > 0:
+        plt.plot(valid_points[:,0], valid_points[:,1], 'k')
+
+    valid_points_inverted = []
+    for y in ys_inverted:
+        if xMin <= y[0] <= xMax and yMin <= y[1] <= yMax:
+            valid_points_inverted.append(y)
+        else:
+            break # stop as soon as we go out of bounds
+    valid_points_inverted = np.array(valid_points_inverted)
+    if len(valid_points_inverted) > 0:
+        plt.plot(valid_points_inverted[:,0], valid_points_inverted[:,1], 'k')
+
 plt.savefig(payload['destination'], dpi=300)
