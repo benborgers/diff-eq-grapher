@@ -3,7 +3,8 @@ import Error from "@/Components/Error";
 import Input from "@/Components/Input";
 import Layout from "@/Components/Layout";
 import { PageProps } from "@/types";
-import { useForm } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
+import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 type Point = [number, number];
@@ -19,7 +20,7 @@ type FormData = {
 };
 
 export default function (props: PageProps) {
-  const { data, setData, post, errors, processing } = useForm<FormData>({
+  const [data, _setData] = useState<FormData>({
     equation1: "(1-y) * x",
     equation2: "(1-x) * y",
     xMin: "0",
@@ -28,11 +29,34 @@ export default function (props: PageProps) {
     yMax: "2",
     points: [],
   });
+  const setData = (first: keyof FormData | FormData, second?: any) => {
+    if (typeof first === "string") {
+      _setData((prev) => ({ ...prev, [first]: second }));
+      return;
+    }
 
-  const generateGraph = () => {
-    post(route("phase-plane.execute"), {
+    if (typeof first === "object") {
+      _setData(first);
+      return;
+    }
+
+    throw "Unhandled case in setData";
+  };
+  const [processing, setProcessing] = useState(false);
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>(
+    {},
+  );
+
+  const generateGraph = (explicitData?: FormData) => {
+    router.visit(route("phase-plane.execute"), {
+      method: "post",
+      data: explicitData ?? data,
       preserveScroll: true,
       preserveState: true,
+      onBefore: () => setProcessing(true),
+      onFinish: () => setProcessing(false),
+      onError: (err) => setErrors(err),
+      onSuccess: () => setErrors({}),
     });
   };
 
@@ -148,6 +172,14 @@ export default function (props: PageProps) {
                   setData(_data);
                   generateGraph();
                 }}
+                onRemovePoint={(point: Point) => {
+                  const _data = { ...data };
+                  _data.points = _data.points.filter(
+                    (p) => p[0] !== point[0] && p[1] !== point[1],
+                  );
+                  setData(_data);
+                  generateGraph(_data);
+                }}
               />
               <p className="mt-2 italic text-sm">
                 Click anywhere to draw the solution starting at that point.
@@ -174,65 +206,100 @@ export default function (props: PageProps) {
   );
 }
 
+const GRAPH_EMPTY_PROPORTION = {
+  LEFT: 0.126,
+  RIGHT: 0.1,
+  TOP: 0.122,
+  BOTTOM: 0.111,
+};
+
 const Image = ({
   graphId,
   data,
-  onAddPoint,
   processing,
+  onAddPoint,
+  onRemovePoint,
 }: {
   graphId: string;
   data: FormData;
-  onAddPoint: (point: Point) => void;
   processing: boolean;
+  onAddPoint: (point: Point) => void;
+  onRemovePoint: (point: Point) => void;
 }) => {
   return (
-    <div
-      onPointerDown={(e) => {
-        if (processing) return;
-
-        const target = e.target as HTMLDivElement;
-
-        const rect = target.getBoundingClientRect();
-
-        const clickX = e.clientX - rect.left;
-        const clickY = e.clientY - rect.top;
-
-        const LEFT_EMPTY = 0.126;
-        const RIGHT_EMPTY = 0.1;
-        const leftEmptyPx = rect.width * LEFT_EMPTY;
-        const rightEmptyPx = rect.width * RIGHT_EMPTY;
-        const graphWidth = rect.width - leftEmptyPx - rightEmptyPx;
-        const graphClickX = clickX - leftEmptyPx;
-        const graphClickXProportion = graphClickX / graphWidth;
-
-        const TOP_EMPTY = 0.12;
-        const BOTTOM_EMPTY = 0.11;
-        const topEmptyPx = rect.height * TOP_EMPTY;
-        const bottomEmptyPx = rect.height * BOTTOM_EMPTY;
-        const graphHeight = rect.height - topEmptyPx - bottomEmptyPx;
-        const graphClickY = clickY - topEmptyPx;
-        const graphClickYProportion = graphClickY / graphHeight;
-
-        if (graphClickXProportion < 0 || graphClickXProportion > 1) return;
-        if (graphClickYProportion < 0 || graphClickYProportion > 1) return;
-
-        const coordinateX =
-          (parseFloat(data.xMax) - parseFloat(data.xMin)) *
-            graphClickXProportion +
-          parseFloat(data.xMin);
-        const coordinateY =
-          (parseFloat(data.yMax) - parseFloat(data.yMin)) *
-            (1 - graphClickYProportion) +
-          parseFloat(data.yMin);
-
-        onAddPoint([coordinateX, coordinateY]);
-      }}
-      className={twMerge(processing ? "cursor-wait" : "cursor-crosshair")}
-    >
+    <div className="relative">
       <img
         src={route("graph.image", graphId)}
         className="border-2 border-black aspect-[1.33/1] object-cover w-full"
       />
+
+      <div
+        className={twMerge(
+          "absolute",
+          processing ? "cursor-wait" : "cursor-crosshair",
+        )}
+        style={{
+          top: GRAPH_EMPTY_PROPORTION.TOP * 100 + "%",
+          bottom: GRAPH_EMPTY_PROPORTION.BOTTOM * 100 + "%",
+          left: GRAPH_EMPTY_PROPORTION.LEFT * 100 + "%",
+          right: GRAPH_EMPTY_PROPORTION.RIGHT * 100 + "%",
+        }}
+        onPointerDown={(e) => {
+          if (processing) return;
+
+          const target = e.target as HTMLDivElement;
+
+          const rect = target.getBoundingClientRect();
+
+          const clickX = e.clientX - rect.left;
+          const clickY = e.clientY - rect.top;
+
+          const graphClickXProportion = clickX / rect.width;
+          const graphClickYProportion = clickY / rect.height;
+
+          if (graphClickXProportion < 0 || graphClickXProportion > 1) return;
+          if (graphClickYProportion < 0 || graphClickYProportion > 1) return;
+
+          const coordinateX =
+            (parseFloat(data.xMax) - parseFloat(data.xMin)) *
+              graphClickXProportion +
+            parseFloat(data.xMin);
+          const coordinateY =
+            (parseFloat(data.yMax) - parseFloat(data.yMin)) *
+              (1 - graphClickYProportion) +
+            parseFloat(data.yMin);
+
+          onAddPoint([coordinateX, coordinateY]);
+        }}
+      >
+        {data.points.map(([x, y]) => {
+          const left =
+            (x / (parseFloat(data.xMax) - parseFloat(data.xMin))) * 100 + "%";
+
+          // 1- because the y axis is inverted in CSS.
+          const top =
+            (1 - y / (parseFloat(data.yMax) - parseFloat(data.yMin))) * 100 +
+            "%";
+
+          return (
+            <button
+              className={twMerge(
+                "absolute h-4 w-4 bg-red-500 rounded-full -translate-y-2 -translate-x-2 opacity-0 duration-100 z-10",
+                // Prevents red dot on hover right after adding a point.
+                !processing && "hover:opacity-100",
+              )}
+              style={{ top, left }}
+              key={`${x},${y}`}
+              type="button"
+              onPointerDown={(e) => {
+                if (processing) return;
+                e.stopPropagation();
+                onRemovePoint([x, y]);
+              }}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 };
