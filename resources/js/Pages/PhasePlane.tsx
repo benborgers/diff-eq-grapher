@@ -286,13 +286,15 @@ const Image = ({
         }}
       >
         {data.points.map(([x, y]) => {
-          const left =
-            (x / (parseFloat(data.xMax) - parseFloat(data.xMin))) * 100 + "%";
+          const xMin = parseFloat(data.xMin);
+          const xMax = parseFloat(data.xMax);
+          const yMin = parseFloat(data.yMin);
+          const yMax = parseFloat(data.yMax);
 
+          // Formula: Distance from left (min) divided by total width.
+          const left = ((x - xMin) / (xMax - xMin)) * 100 + "%";
           // 1- because the y axis is inverted in CSS.
-          const top =
-            (1 - y / (parseFloat(data.yMax) - parseFloat(data.yMin))) * 100 +
-            "%";
+          const top = (1 - (y - yMin) / (yMax - yMin)) * 100 + "%";
 
           return (
             <button
