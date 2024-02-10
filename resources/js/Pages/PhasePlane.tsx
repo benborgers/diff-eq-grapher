@@ -129,13 +129,14 @@ export default function (props: PageProps) {
             </div>
           </div>
 
-          <div className="pt-4 flex justify-between">
+          <div className="pt-4 flex justify-between items-start">
             <Button type="submit" color="emphasis">
               GRAPH &rarr;
             </Button>
 
             <Button
               onClick={() => {
+                props.flash.graph_id = undefined;
                 setData({
                   equation1: "",
                   equation2: "",
@@ -185,7 +186,7 @@ export default function (props: PageProps) {
                 Click anywhere to draw the solution starting at that point.
                 Click the point again to remove it.
               </p>
-              <div className="mt-3">
+              <div className="mt-3 flex gap-x-3">
                 <Button
                   as="a"
                   href={route("graph.image", props.flash.graph_id)}
@@ -193,6 +194,18 @@ export default function (props: PageProps) {
                 >
                   Download &darr;
                 </Button>
+
+                {data.points.length > 0 && (
+                  <Button
+                    onClick={() => {
+                      const _data = { ...data, points: [] };
+                      setData(_data);
+                      generateGraph(_data);
+                    }}
+                  >
+                    Clear Points
+                  </Button>
+                )}
               </div>
             </div>
           )}

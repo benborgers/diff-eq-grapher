@@ -127,6 +127,7 @@ export default function (props: PageProps) {
 
             <Button
               onClick={() => {
+                props.flash.graph_id = undefined;
                 setData({
                   equations: [{ value: "", initialCondition: "" }],
                   timeMax: "",
