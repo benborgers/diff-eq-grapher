@@ -44,7 +44,7 @@ const ModeSwitcher = () => {
 
   return (
     <Link href={href} className="flex items-center gap-x-2">
-      <p className="text-sm font-medium">Standard</p>
+      <p className="text-sm font-medium">1D</p>
       <div className="relative p-0.5 border-[1.5px] border-black rounded-full w-7 bg-white">
         <div
           className={twMerge(
@@ -53,7 +53,7 @@ const ModeSwitcher = () => {
           )}
         />
       </div>
-      <p className="text-sm font-medium">Phase Plane</p>
+      <p className="text-sm font-medium">2D</p>
     </Link>
   );
 };
