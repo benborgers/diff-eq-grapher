@@ -67,7 +67,7 @@ plt.grid()
 
 # Plot trajectories for different starting points and times
 for point in payload['points']:
-    tspan = np.linspace(0, 50, 5000)  # time span for the ODE solver
+    tspan = np.linspace(0, 150, 5000)  # time span for the ODE solver
     ys = odeint(system, point, tspan)
     ys_inverted = odeint(inverted_system, point, tspan)
 
