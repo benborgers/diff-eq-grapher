@@ -78,7 +78,7 @@ for point in payload['points']:
         if xMin <= y[0] <= xMax and yMin <= y[1] <= yMax:
             valid_points.append(y)
         else:
-            valid_points_inverted.append(y) # add the last point out of bounds
+            valid_points.append(y) # add the last point out of bounds
             break # stop as soon as we go out of bounds
     valid_points = np.array(valid_points)
     if len(valid_points) > 0:
