@@ -1,6 +1,11 @@
 # Differential Equation Grapher
 
-The substantial logic that might be most interesting is in [`app/Http/Controllers/Graph.php`](https://github.com/benborgers/diff-eq-grapher/blob/main/app/Http/Controllers/Graph.php).
+Interesting files:
+
+-   [`Graph.php`](https://github.com/benborgers/diff-eq-grapher/blob/main/app/Http/Controllers/Graph.php)
+-   [`graph.py`](https://github.com/benborgers/diff-eq-grapher/blob/main/resources/python/graph.py)
+-   [`GraphPhasePlane.php`](https://github.com/benborgers/diff-eq-grapher/blob/main/app/Http/Controllers/GraphPhasePlane.php)
+-   [`phase-plane.py`](https://github.com/benborgers/diff-eq-grapher/blob/main/resources/python/phase-plane.py)
 
 ## Deployment
 
