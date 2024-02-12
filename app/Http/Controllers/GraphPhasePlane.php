@@ -41,7 +41,7 @@ class GraphPhasePlane extends Controller
                 ...$body,
                 'error' => $result->errorOutput(),
                 'time_elapsed' => round((hrtime(as_number: true) - $START) / 1e6),
-                // TODO: mark graph type
+                'type' => '2d',
             ]);
 
             return redirect()->back()->with('error', $result->errorOutput());
@@ -50,7 +50,7 @@ class GraphPhasePlane extends Controller
         posthog_event('graph_rendered', [
             ...$body,
             'time_elapsed' => round((hrtime(as_number: true) - $START) / 1e6),
-            // TODO: mark graph type
+            'type' => '2d',
         ]);
 
         return redirect()->back()->with('graph_id', $id);

@@ -45,7 +45,8 @@ class Graph extends Controller
             posthog_event('graph_render_error', [
                 ...$body,
                 'error' => $result->errorOutput(),
-                'time_elapsed' => round((hrtime(as_number: true) - $START) / 1e6)
+                'time_elapsed' => round((hrtime(as_number: true) - $START) / 1e6),
+                'type' => '1d',
             ]);
 
             return redirect()->back()->with('error', $result->errorOutput());
@@ -53,7 +54,8 @@ class Graph extends Controller
 
         posthog_event('graph_rendered', [
             ...$body,
-            'time_elapsed' => round((hrtime(as_number: true) - $START) / 1e6)
+            'time_elapsed' => round((hrtime(as_number: true) - $START) / 1e6),
+            'type' => '1d'
         ]);
 
         return redirect()->back()->with('graph_id', $id);
