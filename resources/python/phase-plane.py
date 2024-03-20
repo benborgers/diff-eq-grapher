@@ -55,6 +55,13 @@ N = np.sqrt(U**2 + V**2)
 U = U/N
 V = V/N
 
+# Compute the aspect ratio and adjust the arrows accordingly
+# (this compensates for the fact that the x and y axes have different scales)
+xRange = xMax - xMin
+yRange = yMax - yMin
+aspect_ratio = yRange / xRange
+V = V / aspect_ratio
+
 # Create the figure and plot the phase plane
 plt.figure(figsize=(8, 6))
 plt.quiver(X, Y, U, V, color='#ccc')
