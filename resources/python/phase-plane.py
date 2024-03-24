@@ -117,9 +117,10 @@ tspan = np.linspace(0, 150, 5000)
 for point in payload['points']:
     ys = odeint(system, point, tspan)
 
-    plt.plot(tspan, ys[:, 0], lw=2, label=f'Starting point (x0, y0): {point}')
+    plt.plot(tspan, ys[:, 0], lw=2)
 
 plt.title('x-t graph')
 plt.tight_layout()
+plt.xlim([xMin, xMax])
 
 plt.savefig(payload['xt_destination'], dpi=300)
