@@ -27,14 +27,13 @@ class GraphPhasePlane extends Controller
         $payload = [
             ...$body,
             'destination' => "public/{$id}.png",
+            'xt_destination' => "public/{$id}_1.png",
         ];
 
         $encodedPayload = json_encode($payload);
 
         $result = Process::path($WORKING_DIR)
             ->run("./venv/bin/python3 phase-plane.py '{$encodedPayload}'");
-
-        // dd($result->output() . $result->errorOutput());
 
         if ($result->failed()) {
             posthog_event('graph_render_error', [

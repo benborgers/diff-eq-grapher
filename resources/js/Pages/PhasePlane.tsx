@@ -60,6 +60,10 @@ export default function (props: PageProps) {
     });
   };
 
+  const showAdditionalGraphs = new URLSearchParams(location.search).has(
+    "additional_graphs",
+  );
+
   return (
     <Layout
       left={
@@ -156,7 +160,7 @@ export default function (props: PageProps) {
       right={
         <div>
           {processing && !props.flash.graph_id && (
-            <div className="border-2 border-black bg-white/20 w-full aspect-[1.33/1] animate-pulse"></div>
+            <div className="border-2 border-black bg-white/20 w-full aspect-[4/3] animate-pulse"></div>
           )}
 
           {props.flash.graph_id && (
@@ -207,6 +211,23 @@ export default function (props: PageProps) {
                   </Button>
                 )}
               </div>
+
+              {showAdditionalGraphs && (
+                <div className="mt-12">
+                  <img
+                    src={route("graph.image", `${props.flash.graph_id}_1`)}
+                    className="mt-12 border-2 border-black aspect-[5/2] object-cover w-full"
+                  />
+                  <Button
+                    as="a"
+                    href={route("graph.image", `${props.flash.graph_id}_1`)}
+                    download
+                    className="mt-4"
+                  >
+                    Download &darr;
+                  </Button>
+                </div>
+              )}
             </div>
           )}
 

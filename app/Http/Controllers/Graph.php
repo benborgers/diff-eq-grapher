@@ -29,7 +29,7 @@ class Graph extends Controller
             'destination' => "public/{$id}.png",
         ];
 
-        foreach($payload['equations'] as &$equation) {
+        foreach ($payload['equations'] as &$equation) {
             // Replacements for common inputs that sympy can't handle.
             $equation['value'] = str_replace('pit', 'pi t', $equation['value']);
             $equation['value'] = str_replace('piy', 'pi y', $equation['value']);
@@ -55,7 +55,7 @@ class Graph extends Controller
         posthog_event('graph_rendered', [
             ...$body,
             'time_elapsed' => round((hrtime(as_number: true) - $START) / 1e6),
-            'type' => '1d'
+            'type' => '1d',
         ]);
 
         return redirect()->back()->with('graph_id', $id);

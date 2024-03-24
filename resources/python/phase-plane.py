@@ -103,3 +103,23 @@ for point in payload['points']:
         plt.plot(valid_points_inverted[:,0], valid_points_inverted[:,1], 'k')
 
 plt.savefig(payload['destination'], dpi=300)
+
+
+# x-t graph
+
+plt.figure(figsize=(10, 4))
+plt.xlabel('t')
+plt.ylabel('x')
+plt.grid()
+
+tspan = np.linspace(0, 150, 5000)
+
+for point in payload['points']:
+    ys = odeint(system, point, tspan)
+
+    plt.plot(tspan, ys[:, 0], lw=2, label=f'Starting point (x0, y0): {point}')
+
+plt.title('x-t graph')
+plt.tight_layout()
+
+plt.savefig(payload['xt_destination'], dpi=300)
