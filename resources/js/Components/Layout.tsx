@@ -9,7 +9,7 @@ const Layout = ({
   right: React.ReactNode;
 }) => {
   return (
-    <div className="p-4 md:p-8 md:pb-4 md:grid md:min-h-screen md:grid-rows-[max-content,1fr,max-content] md:grid-cols-[450px,1fr] lg:grid-cols-[550px,1fr]">
+    <div className="p-4 lg:p-8 lg:pb-4 lg:grid lg:h-screen lg:overflow-hidden lg:grid-rows-[max-content,1fr,max-content] lg:grid-cols-[450px,1fr] lg:grid-cols-[550px,1fr]">
       <div className="col-span-2 flex flex-col sm:flex-row justify-between sm:items-center gap-y-1 pb-4">
         <h1 className="text-2xl font-bold text-gray-900">
           Differential Equation Grapher
@@ -19,13 +19,15 @@ const Layout = ({
         </div>
       </div>
 
-      <div className="min-w-0 pt-4 md:border-r-2 md:border-black/10 md:border-dashed md:pr-10">
+      <div className="min-w-0 pt-4 lg:border-r-2 lg:border-black/10 lg:border-dashed lg:pr-10">
         {left}
       </div>
 
-      <div className="min-w-0 pt-16 md:pt-0 md:pl-10">{right}</div>
+      <div className="min-w-0 pt-16 lg:pt-0 lg:pl-10 lg:overflow-scroll pb-8 no-scrollbar">
+        {right}
+      </div>
 
-      <footer className="mt-20 md:mt-6 col-span-2 border-t-2 border-black/10 border-dashed pt-3">
+      <footer className="mt-12 lg:mt-0 col-span-2 border-t-2 border-black/10 border-dashed pt-3">
         <p className="text-sm text-black/40 font-medium">
           Built by{" "}
           <a href="https://ben.page" className="underline">
