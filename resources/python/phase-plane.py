@@ -109,10 +109,19 @@ plt.savefig(payload['destination'], dpi=300)
 # x-t and y-t graph
 
 def find_max_t (ys, min_num, max_num):
-    return min(
-        np.argmax(ys[:, 0] >= max_num) if np.any(ys[:, 0] >= max_num) else len(ys),
-        np.argmax(ys[:, 1] >= max_num) if np.any(ys[:, 1] >= max_num) else len(ys)
-    )
+    indices_max = np.where(ys[:, 0] >= max_num)[0]
+    indices_min = np.where(ys[:, 0] <= min_num)[0]
+
+    if len(indices_max) > 0 and len(indices_min) > 0:
+        first_cross_index = min(indices_max[0], indices_min[0])
+    elif len(indices_max) > 0:
+        first_cross_index = indices_max[0]
+    elif len(indices_min) > 0:
+        first_cross_index = indices_min[0]
+    else:
+        first_cross_index = len(ys)
+
+    return first_cross_index
 
 
 # x-t graph
