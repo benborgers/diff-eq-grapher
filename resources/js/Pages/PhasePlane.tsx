@@ -62,10 +62,6 @@ export default function (props: PageProps) {
     });
   };
 
-  const showAdditionalGraphs = new URLSearchParams(location.search).has(
-    "additional_graphs",
-  );
-
   return (
     <Layout
       left={
@@ -226,38 +222,36 @@ export default function (props: PageProps) {
                 )}
               </div>
 
-              {showAdditionalGraphs && (
-                <div className="mt-12">
-                  <div>
-                    <img
-                      src={route("graph.image", `${props.flash.graph_id}_1`)}
-                      className="mt-12 border-2 border-black aspect-[5/2] object-cover w-full"
-                    />
-                    <Button
-                      as="a"
-                      href={route("graph.image", `${props.flash.graph_id}_1`)}
-                      download
-                      className="mt-4"
-                    >
-                      Download &darr;
-                    </Button>
-                  </div>
-                  <div className="mt-8">
-                    <img
-                      src={route("graph.image", `${props.flash.graph_id}_2`)}
-                      className="mt-12 border-2 border-black aspect-[5/2] object-cover w-full"
-                    />
-                    <Button
-                      as="a"
-                      href={route("graph.image", `${props.flash.graph_id}_2`)}
-                      download
-                      className="mt-4"
-                    >
-                      Download &darr;
-                    </Button>
-                  </div>
+              <div className="mt-12">
+                <div>
+                  <img
+                    src={route("graph.image", `${props.flash.graph_id}_1`)}
+                    className="mt-12 border-2 border-black aspect-[5/2] object-cover w-full"
+                  />
+                  <Button
+                    as="a"
+                    href={route("graph.image", `${props.flash.graph_id}_1`)}
+                    download
+                    className="mt-4"
+                  >
+                    Download &darr;
+                  </Button>
                 </div>
-              )}
+                <div className="mt-8">
+                  <img
+                    src={route("graph.image", `${props.flash.graph_id}_2`)}
+                    className="mt-12 border-2 border-black aspect-[5/2] object-cover w-full"
+                  />
+                  <Button
+                    as="a"
+                    href={route("graph.image", `${props.flash.graph_id}_2`)}
+                    download
+                    className="mt-4"
+                  >
+                    Download &darr;
+                  </Button>
+                </div>
+              </div>
             </div>
           )}
 
