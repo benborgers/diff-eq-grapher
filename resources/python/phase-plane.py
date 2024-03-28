@@ -73,6 +73,7 @@ plt.ylim([yMin, yMax])
 plt.grid()
 
 tspan = np.linspace(0, 150, 5000)
+steps_per_t = 5000/150
 
 # Plot trajectories for different starting points and times
 for point in payload['points']:
@@ -108,7 +109,9 @@ plt.savefig(payload['destination'], dpi=300)
 
 # x-t and y-t graph
 
-def find_max_t (ys, min_num, max_num):
+def find_max_t (ys, min_num, max_num, user_max_t):
+    user_max_t = int(user_max_t * steps_per_t)
+
     indices_max = np.where(ys[:, 0] >= max_num)[0]
     indices_min = np.where(ys[:, 0] <= min_num)[0]
 
@@ -121,7 +124,7 @@ def find_max_t (ys, min_num, max_num):
     else:
         first_cross_index = len(ys)
 
-    return first_cross_index
+    return min(first_cross_index, min(user_max_t, len(ys)))
 
 
 # x-t graph
@@ -136,11 +139,11 @@ for point in payload['points']:
 
     # Find the index where ys[:, 0] first exceeds or equals xMax
     # If ys[:, 0] never reaches xMax, we use all the points
-    index_limit = find_max_t(ys, xMin, xMax)
+    index_limit = find_max_t(ys, xMin, xMax, 100)
 
     plt.plot(tspan[:index_limit], ys[:index_limit, 0], lw=2)
 
-plt.title('x-t graph')
+plt.title('x(t)')
 plt.tight_layout()
 plt.ylim([xMin, xMax])
 
@@ -157,11 +160,11 @@ plt.grid()
 for point in payload['points']:
     ys = odeint(system, point, tspan)
 
-    index_limit = find_max_t(ys, yMin, yMax)
+    index_limit = find_max_t(ys, yMin, yMax, 100)
 
     plt.plot(tspan[:index_limit], ys[:index_limit, 1], lw=2)
 
-plt.title('y-t graph')
+plt.title('y(t)')
 plt.tight_layout()
 plt.ylim([yMin, yMax])
 
