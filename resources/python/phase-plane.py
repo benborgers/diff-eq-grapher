@@ -72,9 +72,10 @@ plt.xlim([xMin, xMax])
 plt.ylim([yMin, yMax])
 plt.grid()
 
+tspan = np.linspace(0, 150, 5000)
+
 # Plot trajectories for different starting points and times
 for point in payload['points']:
-    tspan = np.linspace(0, 150, 5000)  # time span for the ODE solver
     ys = odeint(system, point, tspan)
     ys_inverted = odeint(inverted_system, point, tspan)
 
@@ -107,10 +108,10 @@ plt.savefig(payload['destination'], dpi=300)
 
 # x-t and y-t graph
 
-def find_max_t (ys, max):
+def find_max_t (ys, min_num, max_num):
     return min(
-        np.argmax(ys[:, 0] >= max) if np.any(ys[:, 0] >= max) else len(ys),
-        np.argmax(ys[:, 1] >= max) if np.any(ys[:, 1] >= max) else len(ys)
+        np.argmax(ys[:, 0] >= max_num) if np.any(ys[:, 0] >= max_num) else len(ys),
+        np.argmax(ys[:, 1] >= max_num) if np.any(ys[:, 1] >= max_num) else len(ys)
     )
 
 
@@ -121,14 +122,12 @@ plt.xlabel('t')
 plt.ylabel('x')
 plt.grid()
 
-tspan = np.linspace(0, 150, 5000)
-
 for point in payload['points']:
     ys = odeint(system, point, tspan)
 
     # Find the index where ys[:, 0] first exceeds or equals xMax
     # If ys[:, 0] never reaches xMax, we use all the points
-    index_limit = find_max_t(ys, xMax)
+    index_limit = find_max_t(ys, xMin, xMax)
 
     plt.plot(tspan[:index_limit], ys[:index_limit, 0], lw=2)
 
@@ -146,12 +145,10 @@ plt.xlabel('t')
 plt.ylabel('y')
 plt.grid()
 
-tspan = np.linspace(0, 150, 5000)
-
 for point in payload['points']:
     ys = odeint(system, point, tspan)
 
-    index_limit = find_max_t(ys, yMax)
+    index_limit = find_max_t(ys, yMin, yMax)
 
     plt.plot(tspan[:index_limit], ys[:index_limit, 1], lw=2)
 
