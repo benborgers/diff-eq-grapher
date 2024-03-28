@@ -9,7 +9,7 @@ const Layout = ({
   right: React.ReactNode;
 }) => {
   return (
-    <div className="p-4 lg:p-8 lg:pb-4 lg:grid lg:h-screen lg:overflow-hidden lg:grid-rows-[max-content,1fr,max-content] lg:grid-cols-[450px,1fr] lg:grid-cols-[550px,1fr]">
+    <div className="p-4 lg:p-8 lg:pb-4 lg:grid lg:h-screen lg:overflow-hidden lg:grid-rows-[max-content,1fr,max-content] lg:grid-cols-[450px,1fr]">
       <div className="col-span-2 flex flex-col sm:flex-row justify-between sm:items-center gap-y-1 pb-4">
         <h1 className="text-2xl font-bold text-gray-900">
           Differential Equation Grapher
