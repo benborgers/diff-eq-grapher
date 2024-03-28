@@ -214,18 +214,34 @@ export default function (props: PageProps) {
 
               {showAdditionalGraphs && (
                 <div className="mt-12">
-                  <img
-                    src={route("graph.image", `${props.flash.graph_id}_1`)}
-                    className="mt-12 border-2 border-black aspect-[5/2] object-cover w-full"
-                  />
-                  <Button
-                    as="a"
-                    href={route("graph.image", `${props.flash.graph_id}_1`)}
-                    download
-                    className="mt-4"
-                  >
-                    Download &darr;
-                  </Button>
+                  <div>
+                    <img
+                      src={route("graph.image", `${props.flash.graph_id}_1`)}
+                      className="mt-12 border-2 border-black aspect-[5/2] object-cover w-full"
+                    />
+                    <Button
+                      as="a"
+                      href={route("graph.image", `${props.flash.graph_id}_1`)}
+                      download
+                      className="mt-4"
+                    >
+                      Download &darr;
+                    </Button>
+                  </div>
+                  <div className="mt-8">
+                    <img
+                      src={route("graph.image", `${props.flash.graph_id}_2`)}
+                      className="mt-12 border-2 border-black aspect-[5/2] object-cover w-full"
+                    />
+                    <Button
+                      as="a"
+                      href={route("graph.image", `${props.flash.graph_id}_2`)}
+                      download
+                      className="mt-4"
+                    >
+                      Download &darr;
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>

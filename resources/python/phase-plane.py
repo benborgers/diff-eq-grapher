@@ -105,6 +105,15 @@ for point in payload['points']:
 plt.savefig(payload['destination'], dpi=300)
 
 
+# x-t and y-t graph
+
+def find_max_t (ys, max):
+    return min(
+        np.argmax(ys[:, 0] >= max) if np.any(ys[:, 0] >= max) else len(ys),
+        np.argmax(ys[:, 1] >= max) if np.any(ys[:, 1] >= max) else len(ys)
+    )
+
+
 # x-t graph
 
 plt.figure(figsize=(10, 4))
@@ -117,10 +126,37 @@ tspan = np.linspace(0, 150, 5000)
 for point in payload['points']:
     ys = odeint(system, point, tspan)
 
-    plt.plot(tspan, ys[:, 0], lw=2)
+    # Find the index where ys[:, 0] first exceeds or equals xMax
+    # If ys[:, 0] never reaches xMax, we use all the points
+    index_limit = find_max_t(ys, xMax)
+
+    plt.plot(tspan[:index_limit], ys[:index_limit, 0], lw=2)
 
 plt.title('x-t graph')
 plt.tight_layout()
-plt.xlim([xMin, xMax])
+plt.ylim([xMin, xMax])
 
 plt.savefig(payload['xt_destination'], dpi=300)
+
+
+# y-t graph
+
+plt.figure(figsize=(10, 4))
+plt.xlabel('t')
+plt.ylabel('y')
+plt.grid()
+
+tspan = np.linspace(0, 150, 5000)
+
+for point in payload['points']:
+    ys = odeint(system, point, tspan)
+
+    index_limit = find_max_t(ys, yMax)
+
+    plt.plot(tspan[:index_limit], ys[:index_limit, 1], lw=2)
+
+plt.title('y-t graph')
+plt.tight_layout()
+plt.ylim([yMin, yMax])
+
+plt.savefig(payload['yt_destination'], dpi=300)

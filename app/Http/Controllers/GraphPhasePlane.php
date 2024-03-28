@@ -28,6 +28,7 @@ class GraphPhasePlane extends Controller
             ...$body,
             'destination' => "public/{$id}.png",
             'xt_destination' => "public/{$id}_1.png",
+            'yt_destination' => "public/{$id}_2.png",
         ];
 
         $encodedPayload = json_encode($payload);
