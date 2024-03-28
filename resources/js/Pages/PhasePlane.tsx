@@ -16,6 +16,7 @@ type FormData = {
   xMax: string;
   yMin: string;
   yMax: string;
+  tMax: string;
   points: Point[];
 };
 
@@ -27,6 +28,7 @@ export default function (props: PageProps) {
     xMax: "2",
     yMin: "0",
     yMax: "2",
+    tMax: "50",
     points: [],
   });
   const setData = (first: keyof FormData | FormData, second?: any) => {
@@ -91,44 +93,55 @@ export default function (props: PageProps) {
             error={errors.equation2}
           />
 
-          <div className="space-y-2 w-max mx-auto">
-            <div className="w-20 mx-auto">
-              <Input
-                label="Max Y"
-                type="number"
-                value={data.yMax}
-                onChange={(e) => setData("yMax", e.target.value)}
-                error={errors.yMax}
-              />
-            </div>
-            <div className="flex gap-x-4">
-              <div className="w-20">
+          {/* Little inputs */}
+          <div className="flex items-center justify-around">
+            <div className="space-y-2 w-max">
+              <div className="w-20 mx-auto">
                 <Input
-                  label="Min X"
+                  label="Max y"
                   type="number"
-                  value={data.xMin}
-                  onChange={(e) => setData("xMin", e.target.value)}
-                  error={errors.xMin}
+                  value={data.yMax}
+                  onChange={(e) => setData("yMax", e.target.value)}
+                  error={errors.yMax}
                 />
               </div>
-              <div className="w-20">
+              <div className="flex gap-x-4">
+                <div className="w-20">
+                  <Input
+                    label="Min x"
+                    type="number"
+                    value={data.xMin}
+                    onChange={(e) => setData("xMin", e.target.value)}
+                    error={errors.xMin}
+                  />
+                </div>
+                <div className="w-20">
+                  <Input
+                    label="Max x"
+                    type="number"
+                    value={data.xMax}
+                    onChange={(e) => setData("xMax", e.target.value)}
+                    error={errors.xMax}
+                  />
+                </div>
+              </div>
+              <div className="w-20 mx-auto">
                 <Input
-                  label="Max X"
+                  label="Min y"
                   type="number"
-                  value={data.xMax}
-                  onChange={(e) => setData("xMax", e.target.value)}
-                  error={errors.xMax}
-                  className="w-20"
+                  value={data.yMin}
+                  onChange={(e) => setData("yMin", e.target.value)}
+                  error={errors.yMin}
                 />
               </div>
             </div>
-            <div className="w-20 mx-auto">
+            <div className="w-20">
               <Input
-                label="Min Y"
+                label="Max t"
                 type="number"
-                value={data.yMin}
-                onChange={(e) => setData("yMin", e.target.value)}
-                error={errors.yMin}
+                value={data.tMax}
+                onChange={(e) => setData("tMax", e.target.value)}
+                error={errors.tMax}
               />
             </div>
           </div>
@@ -144,10 +157,11 @@ export default function (props: PageProps) {
                 setData({
                   equation1: "",
                   equation2: "",
-                  xMin: "",
-                  xMax: "",
-                  yMin: "",
-                  yMax: "",
+                  xMin: "0",
+                  xMax: "2",
+                  yMin: "0",
+                  yMax: "2",
+                  tMax: "50",
                   points: [],
                 });
               }}

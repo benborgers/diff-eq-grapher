@@ -19,6 +19,7 @@ class GraphPhasePlane extends Controller
             'xMax' => 'required|numeric',
             'yMin' => 'required|numeric',
             'yMax' => 'required|numeric',
+            'tMax' => 'required|numeric|min:0|max:150',
             'points' => 'present|array',
         ]);
 

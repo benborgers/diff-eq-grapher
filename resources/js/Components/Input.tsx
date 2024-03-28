@@ -24,6 +24,7 @@ export default function Input({
           "border-2 border-black bg-white has-[:focus]:border-red-500 has-[:focus]:ring-1 has-[:focus]:ring-red-500",
           pre && "grid grid-cols-[max-content,1fr]",
         )}
+        data-input
       >
         {pre && (
           <div

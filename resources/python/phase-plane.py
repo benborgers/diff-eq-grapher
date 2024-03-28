@@ -13,6 +13,7 @@ xMin = float(payload['xMin'])
 xMax = float(payload['xMax'])
 yMin = float(payload['yMin'])
 yMax = float(payload['yMax'])
+tMax = float(payload['tMax'])
 
 x_symbol, y_symbol, t_symbol = symbols('x y t')
 
@@ -139,7 +140,7 @@ for point in payload['points']:
 
     # Find the index where ys[:, 0] first exceeds or equals xMax
     # If ys[:, 0] never reaches xMax, we use all the points
-    index_limit = find_max_t(ys, xMin, xMax, 100)
+    index_limit = find_max_t(ys, xMin, xMax, tMax)
 
     plt.plot(tspan[:index_limit], ys[:index_limit, 0], lw=2)
 
@@ -160,7 +161,7 @@ plt.grid()
 for point in payload['points']:
     ys = odeint(system, point, tspan)
 
-    index_limit = find_max_t(ys, yMin, yMax, 100)
+    index_limit = find_max_t(ys, yMin, yMax, tMax)
 
     plt.plot(tspan[:index_limit], ys[:index_limit, 1], lw=2)
 
