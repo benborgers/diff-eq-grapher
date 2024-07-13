@@ -6,14 +6,12 @@ export default function InputBoxy({
   label,
   type = "text",
   prefix,
-  validation = {},
   ...props
 }: {
   name: string;
   label: string | null;
   type?: string;
   prefix?: string;
-  validation?: Record<string, Form.FormMessageProps["match"]>;
 } & React.ComponentProps<"input">) {
   return (
     <Form.Field name={name}>
@@ -39,20 +37,9 @@ export default function InputBoxy({
             type={type}
             className="w-full font-medium border-2 border-black bg-white focus:ring-red-500 focus:border-red-500"
             {...props}
-            required={Object.values(validation).includes("valueMissing")}
           />
         </Form.Control>
       </div>
-      {Object.keys(validation).map((message) => (
-        <Form.Message
-          key={validation[message]?.toString()}
-          match={validation[message]}
-          className="mt-1 text-red-600 text-sm font-medium"
-          asChild
-        >
-          <p>{message}</p>
-        </Form.Message>
-      ))}
     </Form.Field>
   );
 }
