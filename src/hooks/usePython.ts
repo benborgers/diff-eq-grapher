@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import Worker from "web-worker";
 import { loadPyodide } from "pyodide";
 
 declare global {
@@ -7,6 +8,9 @@ declare global {
   }
 }
 
+const url = new URL("../lib/python-worker.ts", import.meta.url);
+const worker = new Worker(url);
+
 export default function usePython() {
   const pyodide = useRef<Awaited<ReturnType<typeof loadPyodide>> | null>(null);
   const renderTargetRef = useRef<HTMLDivElement>(null);
@@ -14,38 +18,41 @@ export default function usePython() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    loadPyodide({
-      indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.1/full/",
-      packages: ["matplotlib", "sympy", "scipy"],
-    }).then((p) => {
-      pyodide.current = p;
-      setReady(true);
-    });
+    // loadPyodide({
+    //   indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.1/full/",
+    //   packages: ["matplotlib", "sympy", "scipy"],
+    // }).then((p) => {
+    //   pyodide.current = p;
+    //   setReady(true);
+    // });
   }, []);
 
   const execute = useCallback(async (code: string) => {
-    if (!renderTargetRef.current) {
-      throw new Error("renderTargetRef is not set");
-    }
+    worker.postMessage(JSON.stringify({ code }));
 
-    if (!pyodide.current) {
-      throw new Error("pyodide is not loaded");
-    }
+    worker.addEventListener("message", (event) => {
+      console.log(event.data);
+    });
 
-    document.pyodideMplTarget = renderTargetRef.current;
-
-    setError(false);
-    try {
-      await pyodide.current.runPythonAsync(code);
-    } catch {
-      setError(true);
-    }
+    // if (!renderTargetRef.current) {
+    //   throw new Error("renderTargetRef is not set");
+    // }
+    // if (!pyodide.current) {
+    //   throw new Error("pyodide is not loaded");
+    // }
+    // document.pyodideMplTarget = renderTargetRef.current;
+    // setError(false);
+    // try {
+    //   await pyodide.current.runPythonAsync(code);
+    // } catch {
+    //   setError(true);
+    // }
   }, []);
 
   return {
     renderTargetRef,
     execute,
-    ready,
+    ready: true,
     error,
   };
 }
