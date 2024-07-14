@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { loadPyodide } from "pyodide";
 
 declare global {
@@ -11,6 +11,7 @@ export default function usePython() {
   const pyodide = useRef<Awaited<ReturnType<typeof loadPyodide>> | null>(null);
   const renderTargetRef = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     loadPyodide({
@@ -22,7 +23,7 @@ export default function usePython() {
     });
   }, []);
 
-  const execute = async (code: string) => {
+  const execute = useCallback(async (code: string) => {
     if (!renderTargetRef.current) {
       throw new Error("renderTargetRef is not set");
     }
@@ -31,14 +32,20 @@ export default function usePython() {
       throw new Error("pyodide is not loaded");
     }
 
-    await pyodide.current.runPythonAsync(code);
-
     document.pyodideMplTarget = renderTargetRef.current;
-  };
+
+    setError(false);
+    try {
+      await pyodide.current.runPythonAsync(code);
+    } catch {
+      setError(true);
+    }
+  }, []);
 
   return {
     renderTargetRef,
     execute,
     ready,
+    error,
   };
 }
